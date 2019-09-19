@@ -72,7 +72,7 @@ namespace Financials.Application.Users.UseCases
 
             }
 
-            presenter(User);        
+            presenter(null);        
         }
 
         private ValidationCode GetValidationCode(Guid userId)
