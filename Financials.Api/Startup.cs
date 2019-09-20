@@ -4,7 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Financials.Application.Codes;
 using Financials.Application.Configuration;
+using Financials.Application.Users;
 using Financials.Infrastructure.Codes;
+using Financials.Infrastructure.Hashing;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -15,11 +17,14 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
+using SimpleInjector;
 
 namespace Financials.Api
 {
     public class Startup
     {
+        private Container container = new Container();
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -30,25 +35,17 @@ namespace Financials.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            // Configure Connection Strings
-            services.Configure<ConnectionStrings>(Configuration.GetSection(nameof(ConnectionStrings)));
-
-            // Configure Financials Database
-            services.AddSingleton<IMongoDatabase>(sp => 
-            {
-                var options = sp.GetService<IOptions<ConnectionStrings>>();
-                var client = new MongoClient(options.Value.Financials.DataSource);
-                return client.GetDatabase(options.Value.Financials.Database);
-            });
-
-            services.AddSingleton<ICodeGenerator, CodeGenerator>();
-
             services.AddControllers();
+            services.AddLogging();
+
+            DependencyInjection.SimpleInjectorConfiguration.Setup(services, container); 
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            DependencyInjection.SimpleInjectorConfiguration.ConfigureApp(app, Configuration, container);
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
