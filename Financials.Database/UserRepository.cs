@@ -12,18 +12,14 @@ namespace Financials.Database
     {
         private readonly IMongoCollection<User> collection;
         private readonly IClientSessionHandle session;
-        public UserRepository(IMongoDatabase mongo)
+        public UserRepository(IMongoDatabase mongo, IClientSessionHandle session)
         {
             this.collection = mongo.GetCollection<User>(nameof(User));
-        }
-        public UserRepository(IMongoDatabase mongo, IClientSessionHandle session)
-            : this(mongo)
-        {
             this.session = session;
         }
 
         public User Add(User user)
-        {
+        {            
             collection.InsertOne(session, user);
             return user;
         }

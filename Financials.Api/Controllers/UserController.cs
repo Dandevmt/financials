@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Financials.Application;
 using Financials.Application.Codes;
 using Financials.Application.Users;
 using Financials.Application.Users.UseCases;
@@ -17,33 +18,23 @@ namespace Financials.Api.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        private readonly IMongoDatabase mongo;
-        private readonly ICodeGenerator codeGenerator;
-        private readonly IPasswordHasher passwordHasher;
-        private readonly UserRepository userRepository;
-        private readonly ValidationCodeRepository codeRepository;
-        private readonly CredentialRepository credRepo;
-        public UserController(IMongoDatabase mongo, ICodeGenerator codeGenerator, IPasswordHasher passwordHasher)
+        private readonly IUseCase<AddUserInput, User> addUserUseCase;
+        public UserController(IUseCase<AddUserInput, User> addUserUseCase)
         {
-            this.mongo = mongo;
-            this.codeGenerator = codeGenerator;
-            this.passwordHasher = passwordHasher;
-            userRepository = new UserRepository(this.mongo);
-            codeRepository = new ValidationCodeRepository(this.mongo);
-            credRepo = new CredentialRepository(this.mongo);
+            this.addUserUseCase = addUserUseCase;
         }
 
         [HttpGet]
         public User Get(string id)
         {
-            return userRepository.Get(Guid.Parse(id));
+            return new User();
         }
 
         [HttpPost]
         public User Post([FromBody] AddUserInput input)
         {
             User user = null;
-            new AddUser(userRepository, codeRepository, codeGenerator, passwordHasher, credRepo).Handle(input, u => user = u);
+            addUserUseCase.Handle(input, u => user = u);
             return user;
         }
     }

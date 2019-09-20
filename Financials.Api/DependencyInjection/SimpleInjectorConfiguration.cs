@@ -1,6 +1,9 @@
-﻿using Financials.Application.Codes;
+﻿using Financials.Application;
+using Financials.Application.Codes;
 using Financials.Application.Configuration;
+using Financials.Application.Repositories;
 using Financials.Application.Users;
+using Financials.Database;
 using Financials.Infrastructure.Codes;
 using Financials.Infrastructure.Hashing;
 using Microsoft.AspNetCore.Builder;
@@ -49,6 +52,21 @@ namespace Financials.Api.DependencyInjection
             // Other Singletons
             container.RegisterSingleton<ICodeGenerator, CodeGenerator>();
             container.RegisterSingleton<IPasswordHasher>(() => new PasswordHasher());
+
+            // Repositories
+            container.Register<IUserRepository, UserRepository>();
+            container.Register<IValidationCodeRepository, ValidationCodeRepository>();
+            container.Register<ICredentialRepository, CredentialRepository>();
+            container.Register<IClientSessionHandle>(() =>
+            {
+                return container.GetInstance<IMongoDatabase>().Client.StartSession();
+            }, Lifestyle.Scoped);
+
+            // Use Case for AOP
+            container.Register(typeof(IUseCase<,>), typeof(IUseCase<,>).Assembly);
+
+            // Decorators
+            container.RegisterDecorator(typeof(IUseCase<,>), typeof(UseCaseUnitOfWorkDecorator<,>));
 
             container.Verify();
         }

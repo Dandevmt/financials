@@ -12,13 +12,9 @@ namespace Financials.Database
         private readonly IMongoCollection<Credentials> collection;
         private readonly IClientSessionHandle session;
 
-        public CredentialRepository(IMongoDatabase mongo)
+        public CredentialRepository(IMongoDatabase mongo, IClientSessionHandle session)
         {
             this.collection = mongo.GetCollection<Credentials>(nameof(Credentials));
-        }
-        public CredentialRepository(IMongoDatabase mongo, IClientSessionHandle session)
-            : this(mongo)
-        {
             this.session = session;
         }
 

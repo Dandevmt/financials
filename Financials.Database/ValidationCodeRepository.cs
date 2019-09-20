@@ -10,20 +10,14 @@ namespace Financials.Database
     public class ValidationCodeRepository : IValidationCodeRepository
     {
         private readonly IMongoCollection<ValidationCode> collection;
-        private readonly IClientSessionHandle session;
         public ValidationCodeRepository(IMongoDatabase mongo)
         {
             collection = mongo.GetCollection<ValidationCode>(nameof(ValidationCode));
         }
-        public ValidationCodeRepository(IMongoDatabase mongo, IClientSessionHandle session)
-            : this(mongo)
-        {
-            this.session = session;
-        }
 
         public ValidationCode Add(ValidationCode code)
         {
-            return collection.FindOneAndReplace(session, FilterUserIdAndType(code.UserId, code.Type), code, new FindOneAndReplaceOptions<ValidationCode>()
+            return collection.FindOneAndReplace(FilterUserIdAndType(code.UserId, code.Type), code, new FindOneAndReplaceOptions<ValidationCode>()
             {
                 IsUpsert = true
             });
@@ -31,13 +25,13 @@ namespace Financials.Database
 
         public bool Delete(Guid userId, ValidationCodeType type)
         {
-            var result = collection.DeleteOne(session, FilterUserIdAndType(userId, type));
+            var result = collection.DeleteOne(FilterUserIdAndType(userId, type));
             return result.DeletedCount >= 1;
         }
 
         public ValidationCode Get(Guid userId, ValidationCodeType type)
         {
-            return collection.Find(session, FilterUserIdAndType(userId, type)).FirstOrDefault();
+            return collection.Find(FilterUserIdAndType(userId, type)).FirstOrDefault();
         }
 
         private FilterDefinition<ValidationCode> FilterUserIdAndType(Guid userId, ValidationCodeType type)
