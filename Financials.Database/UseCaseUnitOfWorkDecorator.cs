@@ -25,7 +25,7 @@ namespace Financials.Database
                 try
                 {
                     useCase.Handle(input, presenter);
-                    //session.CommitTransaction();
+                    session.CommitTransaction();
                 }
                 catch (Exception ex)
                 {
