@@ -16,7 +16,7 @@ namespace Financials.Application.Users.UseCases
         private readonly IPasswordHasher hasher;
         private readonly ICredentialRepository credRepo;
 
-        public Permission PermissionRequired { get; } = Permission.AddUser;
+        public Permission PermissionRequired { get; private set; } = Permission.AddUser;
 
         public AddUser(IUserRepository repo, IValidationCodeRepository codeRepository, ICodeGenerator codeGenerator, IPasswordHasher hasher, ICredentialRepository credRepo)
         {

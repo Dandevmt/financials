@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Financials.Application;
 using Financials.Application.Codes;
+using Financials.Application.Security;
 using Financials.Application.Users;
 using Financials.Application.Users.UseCases;
 using Financials.Database;
@@ -16,9 +17,10 @@ namespace Financials.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UserController : ControllerBase
+    public class UserController : ControllerBase 
     {
         private readonly IUseCase<AddUserInput, User> addUserUseCase;
+
         public UserController(IUseCase<AddUserInput, User> addUserUseCase)
         {
             this.addUserUseCase = addUserUseCase;

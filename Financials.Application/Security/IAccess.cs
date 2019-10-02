@@ -4,9 +4,8 @@ using System.Text;
 
 namespace Financials.Application.Security
 {
-    public enum Permission
+    public interface IAccess
     {
-        AddUser,
-        DeleteUser
+        bool CanDo(Permission permission);
     }
 }

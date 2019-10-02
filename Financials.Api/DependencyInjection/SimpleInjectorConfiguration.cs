@@ -2,6 +2,7 @@
 using Financials.Application.Codes;
 using Financials.Application.Configuration;
 using Financials.Application.Repositories;
+using Financials.Application.Security;
 using Financials.Application.Users;
 using Financials.Database;
 using Financials.Infrastructure.Codes;
@@ -62,11 +63,16 @@ namespace Financials.Api.DependencyInjection
                 return container.GetInstance<IMongoDatabase>().Client.StartSession();
             }, Lifestyle.Scoped);
 
+            // Access
+            container.Register<IAccess, Access>(Lifestyle.Transient);
+
             // Use Case for AOP
             container.Register(typeof(IUseCase<,>), typeof(IUseCase<,>).Assembly);
 
             // Decorators
             container.RegisterDecorator(typeof(IUseCase<,>), typeof(UseCaseUnitOfWorkDecorator<,>));
+            container.RegisterDecorator(typeof(IUseCase<,>), typeof(UseCasePermissionDecorator<,>), context => typeof(IPermissionRequired).IsAssignableFrom(context.ImplementationType));
+            
 
             container.Verify();
         }
