@@ -1,8 +1,10 @@
-﻿using Financials.Application;
+﻿using Financials.Api.Authentication;
+using Financials.Application;
 using Financials.Application.Codes;
 using Financials.Application.Configuration;
 using Financials.Application.Repositories;
 using Financials.Application.Security;
+using Financials.Application.Security.UseCases;
 using Financials.Application.Users;
 using Financials.Database;
 using Financials.Infrastructure.Codes;
@@ -64,6 +66,7 @@ namespace Financials.Api.DependencyInjection
             }, Lifestyle.Scoped);
 
             // Access
+            container.Register<ITokenBuilder, TokenBuilder>(Lifestyle.Singleton);
             container.Register<IAccess, Access>(Lifestyle.Transient);
 
             // Use Case for AOP
@@ -72,7 +75,6 @@ namespace Financials.Api.DependencyInjection
             // Decorators
             container.RegisterDecorator(typeof(IUseCase<,>), typeof(UseCaseUnitOfWorkDecorator<,>));
             container.RegisterDecorator(typeof(IUseCase<,>), typeof(UseCasePermissionDecorator<,>), context => typeof(IPermissionRequired).IsAssignableFrom(context.ImplementationType));
-            
 
             container.Verify();
         }

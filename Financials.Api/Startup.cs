@@ -35,6 +35,7 @@ namespace Financials.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            Authentication.JWTConfiguration.Configure(services);
             services.AddControllers();
             services.AddLogging();
 
@@ -54,6 +55,8 @@ namespace Financials.Api
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseAuthentication();
 
             app.UseAuthorization();
 

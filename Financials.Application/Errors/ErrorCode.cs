@@ -2,6 +2,9 @@
 {
     public enum ErrorCode
     {
-        Validation = 100
+        NA = 0,
+        Validation = 100,
+        InvalidEmailOrPassword = 200,
+        UserNotFound = 250
     }
 }

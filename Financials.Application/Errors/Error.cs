@@ -19,16 +19,18 @@ namespace Financials.Application.Errors
             Description = description;
         }
 
-        public void Throw()
+        public void Throw(string description = null)
         {
-            throw new ErrorException(Code, Message, Description);
+            throw new ErrorException(Code, Message, description ?? Description);
         }
 
-        public void Throw(Exception innerException)
+        public void Throw(Exception innerException, string description = null)
         {
-            throw new ErrorException(Code, Message, Description, innerException);
+            throw new ErrorException(Code, Message, description ?? Description, innerException);
         }
 
         public static Error EmailExists = new Error(ErrorCode.Validation, "Email already exists", "Please enter a activation code, login, reset your password or contact the organization");
+        public static Error InvalidEmailOrPassword = new Error(ErrorCode.InvalidEmailOrPassword, "Invalid Email or Password");
+        public static Error UserNotFound = new Error(ErrorCode.UserNotFound, "User Not Found");
     }
 }

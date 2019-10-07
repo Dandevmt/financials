@@ -10,7 +10,7 @@ namespace Financials.Api
     {
         public bool CanDo(Permission permission)
         {
-            return false;
+            return true;
         }
     }
 }
