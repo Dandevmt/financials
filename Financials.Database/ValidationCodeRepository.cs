@@ -34,9 +34,19 @@ namespace Financials.Database
             return collection.Find(FilterUserIdAndType(userId, type)).FirstOrDefault();
         }
 
+        public ValidationCode GetFederationCode(string federationCode)
+        {
+            return collection.Find(FilterFederationCode(federationCode)).FirstOrDefault();
+        }
+
         private FilterDefinition<ValidationCode> FilterUserIdAndType(Guid userId, ValidationCodeType type)
         {
             return Builders<ValidationCode>.Filter.Eq(v => v.UserId, userId) & Builders<ValidationCode>.Filter.Eq(v => v.Type, type);
+        }
+
+        private FilterDefinition<ValidationCode> FilterFederationCode(string federationCode)
+        {
+            return Builders<ValidationCode>.Filter.Eq(v => v.Code, federationCode) & Builders<ValidationCode>.Filter.Eq(v => v.Type, ValidationCodeType.Federation);
         }
     }
 }

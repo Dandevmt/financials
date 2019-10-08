@@ -8,6 +8,7 @@ namespace Financials.Entities
 {
     public class ValidationCode
     {
+        public ObjectId Id { get; set; }
         [BsonRepresentation(BsonType.String)]
         public Guid UserId { get; set; }
         public DateTime CreatedDate { get; set; }

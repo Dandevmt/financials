@@ -31,53 +31,56 @@ namespace Financials.Application.Users.UseCases
 
         public void Handle(RegisterUserInput input, Action<User> presenter)
         {
+            if (string.IsNullOrWhiteSpace(input.FederationCode))
+                Error.InvalidFederationCode.Throw();
+
             var creds = GetCredentials(input.Email);
-            if (creds != null && string.IsNullOrWhiteSpace(input.FederationCode))
-            {
+            if (creds != null)
                 Error.EmailExists.Throw();
-            }
 
-            if (!string.IsNullOrWhiteSpace(input.FederationCode))
-            {                
-                if (creds != null)
-                {
-                    var federationCode = GetValidationCode(creds.UserId);
-                    if (federationCode.Code != input.FederationCode)
-                    {
-                        // Invalid Code
-                    } else if ((DateTime.Today - federationCode.CreatedDate).TotalDays > 15)
-                    {
-                        // Code is no longer valid - contact organization
-                    } else
-                    {
-                        // Update User
-                        var user = GetUser(creds.UserId);
-                        user.Profile.FirstName = input.FirstName;
-                        user.Profile.LastName = input.LastName;
-                        user.Profile.EmailVerified = DateTime.Now;
-                        user.Profile.Address.City = input.City;
-                        user.Profile.Address.State = input.State;
-                        user.Profile.Address.Country = input.Country;
-                        user.Profile.Address.Street = input.Street;
-                        user.Profile.Address.Zip = input.Zip;
-
-                        codeRepo.Delete(creds.UserId, ValidationCodeType.Federation);
-                    }
-                } else
-                {
-
-                }
-            } else
+            var federationCode = GetValidationCode(input.FederationCode);
+            if (federationCode == null || federationCode.Code != input.FederationCode || (DateTime.Today - federationCode.CreatedDate).TotalDays > 15)
             {
+                Error.InvalidFederationCode.Throw();
+            }
+            else
+            {
+                // Update User
+                var user = GetUser(federationCode.UserId);
+                user.Profile.FirstName = input.FirstName;
+                user.Profile.LastName = input.LastName;
+                user.Profile.Address.City = input.City;
+                user.Profile.Address.State = input.State;
+                user.Profile.Address.Country = input.Country;
+                user.Profile.Address.Street = input.Street;
+                user.Profile.Address.Zip = input.Zip;
 
+                credRepo.Add(new Credentials() 
+                {
+                    UserId = federationCode.UserId,
+                    Email = input.Email,
+                    Password = hasher.HashPassword(input.Password)
+                });
+
+                codeRepo.Add(new ValidationCode() 
+                {
+                    Code = codeGenerator.Generate(30),
+                    CreatedDate = DateTime.Now,
+                    Type = ValidationCodeType.Email,
+                    UserId = federationCode.UserId
+                });
+
+                codeRepo.Delete(federationCode.UserId, ValidationCodeType.Federation);
+
+                presenter(user);
             }
 
-            presenter(null);        
+            presenter(null);                  
         }
 
-        private ValidationCode GetValidationCode(Guid userId)
+        private ValidationCode GetValidationCode(string federationCode)
         {
-            return codeRepo.Get(userId, ValidationCodeType.Federation);
+            return codeRepo.GetFederationCode(federationCode);
         }
 
         private Credentials GetCredentials(string email)

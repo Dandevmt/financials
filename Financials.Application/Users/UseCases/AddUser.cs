@@ -81,7 +81,8 @@ namespace Financials.Application.Users.UseCases
                 {
                     UserId = userId,
                     CreatedDate = DateTime.Now,
-                    Code = codeGenerator.Generate(8).ToUpper()
+                    Code = codeGenerator.Generate(8).ToUpper(),
+                    Type = ValidationCodeType.Federation
                 });
             } else
             {

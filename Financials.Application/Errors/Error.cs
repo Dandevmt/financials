@@ -30,7 +30,9 @@ namespace Financials.Application.Errors
         }
 
         public static Error EmailExists = new Error(ErrorCode.Validation, "Email already exists", "Please enter a activation code, login, reset your password or contact the organization");
+        public static Error EmailNotVerified = new Error(ErrorCode.EmailNotVerified, "Email not validated", "Please verify Email");
         public static Error InvalidEmailOrPassword = new Error(ErrorCode.InvalidEmailOrPassword, "Invalid Email or Password");
+        public static Error InvalidFederationCode = new Error(ErrorCode.InvalidFederationCode, "Invalid Federation Code");
         public static Error UserNotFound = new Error(ErrorCode.UserNotFound, "User Not Found");
     }
 }

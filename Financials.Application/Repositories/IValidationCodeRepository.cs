@@ -8,6 +8,7 @@ namespace Financials.Application.Repositories
     public interface IValidationCodeRepository
     {
         ValidationCode Get(Guid userId, ValidationCodeType type);
+        ValidationCode GetFederationCode(string federationCode);
         ValidationCode Add(ValidationCode code);
         bool Delete(Guid userId, ValidationCodeType type);
     }

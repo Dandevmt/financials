@@ -21,11 +21,11 @@ namespace Financials.Database
         {
             using (session)
             {
-                session.StartTransaction();
+                // session.StartTransaction();
                 try
                 {
                     useCase.Handle(input, presenter);
-                    session.CommitTransaction();
+                    // session.CommitTransaction();
                 }
                 catch (Exception ex)
                 {
