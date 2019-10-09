@@ -29,7 +29,7 @@ namespace Financials.Database
                 }
                 catch (Exception ex)
                 {
-                    session.AbortTransaction();
+                    //session.AbortTransaction();
                     throw ex;
                 }
             }                       

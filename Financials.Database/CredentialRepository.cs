@@ -36,6 +36,18 @@ namespace Financials.Database
             return collection.Find(session, FilterByEmail(email)).FirstOrDefault();
         }
 
+        public Credentials UpdateOne(Credentials credentials)
+        {
+            var result = collection.ReplaceOne(FilterByUserId(credentials.UserId), credentials);
+            if (result.IsAcknowledged)
+            {
+                return credentials;
+            } else
+            {
+                return null;
+            }
+        }
+
         private FilterDefinition<Credentials> FilterByUserId(Guid userId)
         {
             return Builders<Credentials>.Filter.Eq(c => c.UserId, userId);

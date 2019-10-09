@@ -6,32 +6,21 @@ namespace Financials.Application.Errors
 {
     public class ErrorException : Exception
     {
-        public ErrorCode Code { get; set; }
-        public string Description { get; set; }
+        public Error Error { get; private set; }
         
-        public ErrorException(ErrorCode code, string message) : base(message)
+        public ErrorException(Error error) : base(error.Message)
         {
-            Code = code;
+            Error = error;
         }
 
-        public ErrorException(ErrorCode code, string message, string description) : this(code, message)
+        public ErrorException(Error error, Exception innerException) : base(error.Message, innerException)
         {
-            Description = description;
-        }
-
-        public ErrorException(ErrorCode code, string message, Exception innerException) : base(message, innerException)
-        {
-            Code = code;
-        }
-
-        public ErrorException(ErrorCode code, string message, string description, Exception innerException) : this(code, message, innerException)
-        {
-            Description = description;
+            Error = error;
         }
 
         public override string ToString()
         {
-            return $"Code: {Code}{Environment.NewLine}Message: {Message}{Environment.NewLine}Description: {Description}{Environment.NewLine}Inner Exception: {InnerException}";
+            return $"Code: {Error.Code}{Environment.NewLine}Message: {Error.Message}{Environment.NewLine}Description: {Error.Description}{Environment.NewLine}Inner Exception: {InnerException}";
         }
     }
 }

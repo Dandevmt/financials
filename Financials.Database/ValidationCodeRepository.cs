@@ -17,10 +17,8 @@ namespace Financials.Database
 
         public ValidationCode Add(ValidationCode code)
         {
-            return collection.FindOneAndReplace(FilterUserIdAndType(code.UserId, code.Type), code, new FindOneAndReplaceOptions<ValidationCode>()
-            {
-                IsUpsert = true
-            });
+            collection.InsertOne(code);
+            return code;
         }
 
         public bool Delete(Guid userId, ValidationCodeType type)

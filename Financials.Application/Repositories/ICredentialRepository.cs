@@ -10,5 +10,6 @@ namespace Financials.Application.Repositories
         Credentials Get(Guid userId);
         Credentials Get(string email);
         Credentials Add(Credentials credentials);
+        Credentials UpdateOne(Credentials credentials);
     }
 }

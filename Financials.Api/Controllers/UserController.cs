@@ -4,11 +4,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using Financials.Application;
 using Financials.Application.Codes;
+using Financials.Application.Errors;
 using Financials.Application.Security;
 using Financials.Application.Users;
 using Financials.Application.Users.UseCases;
 using Financials.Database;
 using Financials.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
@@ -32,12 +34,13 @@ namespace Financials.Api.Controllers
             return new User();
         }
 
-        [HttpPost]
-        public User Post([FromBody] AddUserInput input)
+        [HttpPost, Authorize]
+        public IActionResult Post([FromBody] AddUserInput input)
         {
             User user = null;
             addUserUseCase.Handle(input, u => user = u);
-            return user;
+            return Ok(user);
+
         }
     }
 }

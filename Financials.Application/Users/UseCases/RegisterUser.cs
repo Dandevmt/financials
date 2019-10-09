@@ -59,6 +59,7 @@ namespace Financials.Application.Users.UseCases
                 {
                     UserId = federationCode.UserId,
                     Email = input.Email,
+                    EmailVerified = null,
                     Password = hasher.HashPassword(input.Password)
                 });
 
@@ -71,6 +72,8 @@ namespace Financials.Application.Users.UseCases
                 });
 
                 codeRepo.Delete(federationCode.UserId, ValidationCodeType.Federation);
+
+                // TODO: Send email to verify email
 
                 presenter(user);
             }

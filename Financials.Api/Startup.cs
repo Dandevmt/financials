@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Financials.Api.Errors;
 using Financials.Application.Codes;
 using Financials.Application.Configuration;
 using Financials.Application.Users;
@@ -51,6 +52,8 @@ namespace Financials.Api
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.ConfigureExceptionHandler();
 
             app.UseHttpsRedirection();
 

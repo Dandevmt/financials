@@ -32,6 +32,9 @@ namespace Financials.Application.Security.UseCases
             if (creds == null)
                 Error.InvalidEmailOrPassword.Throw();
 
+            if (creds.EmailVerified == null)
+                Error.EmailNotVerified.Throw();
+
             if (!hasher.VerifyPassword(creds.Password, input.Password))
                 Error.InvalidEmailOrPassword.Throw();
 

@@ -31,7 +31,7 @@ namespace Financials.Application.Security
                     }
                     else
                     {
-                        throw new UnauthorizedAccessException($"Access denied for: {permUseCase.PermissionRequired}");
+                        Errors.ForbiddenError.Throw(permUseCase.PermissionRequired);
                     }
                 }
                 uc = (IUseCase<TInput, TOutput>)useCase.GetType().GetFields(BindingFlags.Instance | BindingFlags.NonPublic).FirstOrDefault(p => p.FieldType.IsAssignableFrom(typeof(IUseCase<TInput, TOutput>))).GetValue(useCase);

@@ -24,7 +24,7 @@ namespace Financials.Api.Authentication
                         ValidateIssuerSigningKey = true,
                         ValidIssuer = "JWT:Issuer",
                         ValidAudience = "JWT:Issuer",
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("JWT:KEY"))
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("JWT:KEYLKIHBVGFT"))
                     };
                 });
         }
