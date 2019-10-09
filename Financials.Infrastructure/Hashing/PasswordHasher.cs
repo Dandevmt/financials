@@ -1,4 +1,5 @@
-﻿using Financials.Application.Users;
+﻿using Financials.Application.Security;
+using Financials.Application.Users;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using System;
 using System.Collections.Generic;

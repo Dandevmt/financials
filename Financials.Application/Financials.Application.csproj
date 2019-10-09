@@ -8,4 +8,8 @@
     <ProjectReference Include="..\Financials.Entities\Financials.Entities.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Email\" />
+  </ItemGroup>
+
 </Project>

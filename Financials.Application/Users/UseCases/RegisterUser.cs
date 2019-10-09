@@ -1,6 +1,7 @@
 ﻿using Financials.Application.Codes;
 using Financials.Application.Errors;
 using Financials.Application.Repositories;
+using Financials.Application.Security;
 using Financials.Entities;
 using System;
 using System.Collections.Generic;
