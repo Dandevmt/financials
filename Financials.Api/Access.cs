@@ -50,8 +50,6 @@ namespace Financials.Api
                 user = userRepo.Get(userId);
             }
 
-            return true;
-
             if (user == null || user.Permissions == null || user.Permissions.Count == 0)
                 return false;
 
