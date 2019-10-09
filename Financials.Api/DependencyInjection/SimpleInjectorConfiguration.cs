@@ -4,7 +4,6 @@ using Financials.Application.Codes;
 using Financials.Application.Configuration;
 using Financials.Application.Repositories;
 using Financials.Application.Security;
-using Financials.Application.Security.UseCases;
 using Financials.Application.Users;
 using Financials.Database;
 using Financials.Infrastructure.Codes;

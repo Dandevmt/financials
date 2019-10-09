@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Financials.Application.Configuration;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using System;
@@ -11,7 +12,7 @@ namespace Financials.Api.Authentication
 {
     public static class JWTConfiguration
     {
-        public static void Configure(IServiceCollection services)
+        public static void Configure(IServiceCollection services, AppSettings appSettings)
         {
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options => 
@@ -22,9 +23,9 @@ namespace Financials.Api.Authentication
                         ValidateAudience = true,
                         ValidateLifetime = true,
                         ValidateIssuerSigningKey = true,
-                        ValidIssuer = "JWT:Issuer",
-                        ValidAudience = "JWT:Issuer",
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("JWT:KEYLKIHBVGFT"))
+                        ValidIssuer = appSettings.TokenIssuer,
+                        ValidAudience = appSettings.TokenAudience,
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(appSettings.TokenKey))
                     };
                 });
         }

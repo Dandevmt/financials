@@ -96,10 +96,4 @@ namespace Financials.Application.Users.UseCases
             return userRepo.Get(id);
         }
     }
-
-    public class RegisterUserInput : AddUserInput
-    {
-        public string Password { get; set; }
-        public string FederationCode { get; set; }
-    }
 }

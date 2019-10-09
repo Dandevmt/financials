@@ -1,4 +1,4 @@
-﻿namespace Financials.Application.Security.UseCases
+﻿namespace Financials.Application.Security
 {
     public interface ITokenBuilder
     {

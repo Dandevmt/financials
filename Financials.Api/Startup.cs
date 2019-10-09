@@ -36,11 +36,13 @@ namespace Financials.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            Authentication.JWTConfiguration.Configure(services);
+            var appSettings = Configuration.GetSection(nameof(AppSettings)).Get<AppSettings>();
+            Authentication.JWTConfiguration.Configure(services, appSettings);
+
             services.AddControllers();
             services.AddLogging();
 
-            DependencyInjection.SimpleInjectorConfiguration.Setup(services, container); 
+            DependencyInjection.SimpleInjectorConfiguration.Setup(services, container);  
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
