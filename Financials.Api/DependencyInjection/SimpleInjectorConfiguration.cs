@@ -57,9 +57,9 @@ namespace Financials.Api.DependencyInjection
             container.RegisterSingleton<IPasswordHasher>(() => new PasswordHasher());
 
             // Repositories
-            container.Register<IUserRepository, UserRepository>();
-            container.Register<IValidationCodeRepository, ValidationCodeRepository>();
-            container.Register<ICredentialRepository, CredentialRepository>();
+            container.Register<IUserRepository, UserRepository>(Lifestyle.Scoped);
+            container.Register<IValidationCodeRepository, ValidationCodeRepository>(Lifestyle.Scoped);
+            container.Register<ICredentialRepository, CredentialRepository>(Lifestyle.Scoped);
             container.Register<IClientSessionHandle>(() =>
             {
                 return container.GetInstance<IMongoDatabase>().Client.StartSession();
@@ -67,7 +67,7 @@ namespace Financials.Api.DependencyInjection
 
             // Access
             container.Register<ITokenBuilder, TokenBuilder>(Lifestyle.Singleton);
-            container.Register<IAccess, Access>(Lifestyle.Transient);
+            container.Register<IAccess, Access>(Lifestyle.Scoped);
 
             // Use Case for AOP
             container.Register(typeof(IUseCase<,>), typeof(IUseCase<,>).Assembly);

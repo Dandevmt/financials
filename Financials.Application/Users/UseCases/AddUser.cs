@@ -18,7 +18,12 @@ namespace Financials.Application.Users.UseCases
 
         public Permission PermissionRequired { get; private set; } = Permission.AddUser;
 
-        public AddUser(IUserRepository repo, IValidationCodeRepository codeRepository, ICodeGenerator codeGenerator, IPasswordHasher hasher, ICredentialRepository credRepo)
+        public AddUser(
+            IUserRepository repo, 
+            IValidationCodeRepository codeRepository, 
+            ICodeGenerator codeGenerator, 
+            IPasswordHasher hasher, 
+            ICredentialRepository credRepo)
         {
             this.userRepo = repo;
             this.codeRepository = codeRepository;
