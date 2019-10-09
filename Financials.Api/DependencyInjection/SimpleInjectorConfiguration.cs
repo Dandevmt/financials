@@ -74,6 +74,7 @@ namespace Financials.Api.DependencyInjection
             }, Lifestyle.Scoped);
 
             // Access
+            container.RegisterInstance<Func<IAccess>>(() => container.GetInstance<IAccess>());
             container.Register<ITokenBuilder, TokenBuilder>(Lifestyle.Singleton);
             container.Register<IAccess, Access>(Lifestyle.Scoped);
 

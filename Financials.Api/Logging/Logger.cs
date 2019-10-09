@@ -1,5 +1,6 @@
 ﻿using Financials.Application.Configuration;
 using Financials.Application.Logging;
+using Financials.Application.Security;
 using MongoDB.Driver;
 using Serilog;
 using System;
@@ -12,9 +13,11 @@ namespace Financials.Api.Logging
     public class Logger<T> : Application.Logging.ILogger
     {
         private readonly Serilog.ILogger log;
+        private readonly Func<IAccess> accessFactory;
 
-        public Logger(IMongoDatabase db)
+        public Logger(IMongoDatabase db, Func<IAccess> accessFactory)
         {
+            this.accessFactory = accessFactory;
             log = new LoggerConfiguration()
                 .WriteTo
                 .MongoDBCapped(db, Serilog.Events.LogEventLevel.Information)
@@ -24,22 +27,23 @@ namespace Financials.Api.Logging
 
         public void Log(LogEntry logEntry)
         {
+            var user = accessFactory().CurrentUser();
             switch (logEntry.LogLevel)
             {
                 case LogLevel.Information:
-                    log.Information(logEntry.Exception, logEntry.Message);
+                    log.ForContext("userId", user?.Id).Information(logEntry.Exception, logEntry.Message);
                     break;
                 case LogLevel.Debug:
-                    log.Debug(logEntry.Exception, logEntry.Message);
+                    log.ForContext("userId", user?.Id).Debug(logEntry.Exception, logEntry.Message);
                     break;
                 case LogLevel.Warning:
-                    log.Warning(logEntry.Exception, logEntry.Message);
+                    log.ForContext("userId", user?.Id).Warning(logEntry.Exception, logEntry.Message);
                     break;
                 case LogLevel.Error:
-                    log.Error(logEntry.Exception, logEntry.Message);
+                    log.ForContext("userId", user?.Id).Error(logEntry.Exception, logEntry.Message);
                     break;
                 case LogLevel.Fatal:
-                    log.Fatal(logEntry.Exception, logEntry.Message);
+                    log.ForContext("userId", user?.Id).Fatal(logEntry.Exception, logEntry.Message);
                     break;
                 default:
                     break;
