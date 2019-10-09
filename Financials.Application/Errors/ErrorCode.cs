@@ -3,7 +3,7 @@
     public enum ErrorCode
     {
         NA = 0,
-        Validation = 100,
+        Validation = 400,
         EmailNotVerified = 150,
         EmailCouldNotUpdateDatabase = 160,
         InvalidEmailOrPassword = 200,

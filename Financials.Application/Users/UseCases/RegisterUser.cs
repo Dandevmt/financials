@@ -32,16 +32,16 @@ namespace Financials.Application.Users.UseCases
         public void Handle(RegisterUserInput input, Action<User> presenter)
         {
             if (string.IsNullOrWhiteSpace(input.FederationCode))
-                Error.InvalidFederationCode.Throw();
+                Error.InvalidFederationCode().Throw();
 
             var creds = GetCredentials(input.Email);
             if (creds != null)
-                Error.EmailExists.Throw();
+                Error.EmailExists().Throw();
 
             var federationCode = GetValidationCode(input.FederationCode);
             if (federationCode == null || federationCode.Code != input.FederationCode || (DateTime.Today - federationCode.CreatedDate).TotalDays > 15)
             {
-                Error.InvalidFederationCode.Throw();
+                Error.InvalidFederationCode().Throw();
             }
             else
             {

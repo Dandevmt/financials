@@ -30,17 +30,17 @@ namespace Financials.Application.Security.UseCases
         {
             var creds = credRepo.Get(input.Email);
             if (creds == null)
-                Error.InvalidEmailOrPassword.Throw();
+                Error.InvalidEmailOrPassword().Throw();
 
             if (creds.EmailVerified == null)
-                Error.EmailNotVerified.Throw();
+                Error.EmailNotVerified().Throw();
 
             if (!hasher.VerifyPassword(creds.Password, input.Password))
-                Error.InvalidEmailOrPassword.Throw();
+                Error.InvalidEmailOrPassword().Throw();
 
             var user = userRepo.Get(creds.UserId);
             if (user == null)
-                Error.UserNotFound.Throw($"User with id of {creds.UserId.ToString()} was not found");
+                Error.UserNotFound().Throw($"User with id of {creds.UserId.ToString()} was not found");
 
             presenter(tokenBuilder.Build(user));
         }

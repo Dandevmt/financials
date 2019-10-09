@@ -24,10 +24,10 @@ namespace Financials.Api.Errors
                     var contextFeature = context.Features.Get<IExceptionHandlerFeature>();
                     if (contextFeature != null)
                     {
-                        if (contextFeature.Error is ForbiddenException forbidden)
+                        if (contextFeature.Error is ErrorException ex)
                         {
-                            context.Response.StatusCode = (int)forbidden.Error.Code;
-                            await context.Response.WriteAsync(forbidden.Error.ToString());
+                            context.Response.StatusCode = (int)ex.Error.Code;
+                            await context.Response.WriteAsync(ex.ToString());
                         } else
                         {
                             await context.Response.WriteAsync(contextFeature.Error.ToString());

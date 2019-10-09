@@ -34,6 +34,8 @@ namespace Financials.Application.Users.UseCases
 
         public void Handle(AddUserInput input, Action<User> presenter)
         {
+            input.Validate();
+
             var user = AddUserFromInput(input);
             var creds = AddCredentialsIfEmail(input.Email, user.Id);
             var validationCode = AddValidationCodeIfNoEmail(user.Id, input.Email);
