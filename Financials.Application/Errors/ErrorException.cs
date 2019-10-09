@@ -20,7 +20,7 @@ namespace Financials.Application.Errors
 
         public override string ToString()
         {
-            return $"{{\"error\":{Error.ToString()},\"innerException\":{InnerException}}}";
+            return $"{{\"error\":{Error.ToString()},\"stackTrace\":\"{StackTrace}\",\"innerException\":{InnerException}}}";
         }
     }
 }

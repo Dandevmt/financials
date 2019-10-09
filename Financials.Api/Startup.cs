@@ -55,7 +55,7 @@ namespace Financials.Api
                 app.UseDeveloperExceptionPage();
             }
 
-            app.ConfigureExceptionHandler();
+            app.ConfigureExceptionHandler(container.GetInstance<Application.Logging.ILogger>());
 
             app.UseHttpsRedirection();
 

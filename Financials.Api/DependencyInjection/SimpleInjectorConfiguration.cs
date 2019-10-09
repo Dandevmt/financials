@@ -1,7 +1,9 @@
 ﻿using Financials.Api.Authentication;
+using Financials.Api.Logging;
 using Financials.Application;
 using Financials.Application.Codes;
 using Financials.Application.Configuration;
+using Financials.Application.Logging;
 using Financials.Application.Repositories;
 using Financials.Application.Security;
 using Financials.Application.Users;
@@ -54,6 +56,13 @@ namespace Financials.Api.DependencyInjection
             // Other Singletons
             container.RegisterSingleton<ICodeGenerator, CodeGenerator>();
             container.RegisterSingleton<IPasswordHasher>(() => new PasswordHasher());
+
+            // Logging
+            container.RegisterConditional(
+                typeof(ILogger),
+                c => typeof(Logger<>).MakeGenericType(c.Consumer?.ImplementationType ?? typeof(Program)),
+                Lifestyle.Singleton,
+                c => true);
 
             // Repositories
             container.Register<IUserRepository, UserRepository>(Lifestyle.Scoped);
