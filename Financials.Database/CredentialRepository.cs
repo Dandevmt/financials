@@ -20,10 +20,8 @@ namespace Financials.Database
 
         public Credentials Add(Credentials credentials)
         {
-            return collection.FindOneAndReplace(session, FilterByUserId(credentials.UserId), credentials, new FindOneAndReplaceOptions<Credentials>()
-            {
-                IsUpsert = true
-            });
+            collection.InsertOne(session, credentials);
+            return credentials;
         }
 
         public Credentials Get(Guid userId)

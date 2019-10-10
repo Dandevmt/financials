@@ -22,10 +22,10 @@ namespace Financials.Api.Controllers
         }
 
         [HttpPost]
-        public User Register([FromBody] RegisterUserInput input)
+        public async Task<User> Register([FromBody] RegisterUserInput input)
         {
             User user = null;
-            registerUserUseCase.Handle(input, u => user = u);
+            await registerUserUseCase.Handle(input, u => user = u);
             return user;
         }
     }

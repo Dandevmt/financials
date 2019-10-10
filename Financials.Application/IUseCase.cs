@@ -7,6 +7,6 @@ namespace Financials.Application
 {
     public interface IUseCase<TInput, TOutput>
     {
-        void Handle(TInput input, Action<TOutput> presenter);
+        Task Handle(TInput input, Action<TOutput> presenter);
     }
 }

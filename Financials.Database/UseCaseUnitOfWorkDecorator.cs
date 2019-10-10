@@ -3,6 +3,7 @@ using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Financials.Database
 {
@@ -17,14 +18,14 @@ namespace Financials.Database
             this.useCase = useCase;
         }
 
-        public void Handle(TInput input, Action<TOutput> presenter)
+        public async Task Handle(TInput input, Action<TOutput> presenter)
         {
             using (session)
             {
                 // session.StartTransaction();
                 try
                 {
-                    useCase.Handle(input, presenter);
+                    await useCase.Handle(input, presenter);
                     // session.CommitTransaction();
                 }
                 catch (Exception ex)

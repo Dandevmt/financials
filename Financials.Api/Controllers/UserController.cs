@@ -4,12 +4,14 @@ using System.Linq;
 using System.Threading.Tasks;
 using Financials.Application;
 using Financials.Application.Codes;
+using Financials.Application.Configuration;
 using Financials.Application.Errors;
 using Financials.Application.Security;
 using Financials.Application.Users;
 using Financials.Application.Users.UseCases;
 using Financials.Database;
 using Financials.Entities;
+using Financials.Infrastructure.Email;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -29,7 +31,7 @@ namespace Financials.Api.Controllers
         }
 
         [HttpGet]
-        public User Get(string id)
+        public async Task<User> Get(string id)
         {
             return new User();
         }

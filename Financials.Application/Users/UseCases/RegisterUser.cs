@@ -1,4 +1,6 @@
 ﻿using Financials.Application.Codes;
+using Financials.Application.Configuration;
+using Financials.Application.Email;
 using Financials.Application.Errors;
 using Financials.Application.Repositories;
 using Financials.Application.Security;
@@ -6,6 +8,7 @@ using Financials.Entities;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Financials.Application.Users.UseCases
 {
@@ -16,21 +19,27 @@ namespace Financials.Application.Users.UseCases
         private readonly ICodeGenerator codeGenerator;
         private readonly ICredentialRepository credRepo;
         private readonly IPasswordHasher hasher;
+        private readonly IEmailSender emailSender;
+        private readonly AppSettings appSettings;
         public RegisterUser(
             IUserRepository userRepo, 
             IValidationCodeRepository codeRepo, 
             ICodeGenerator codeGenerator,
             ICredentialRepository credRepo,
-            IPasswordHasher hasher)
+            IPasswordHasher hasher,
+            IEmailSender emailSender,
+            AppSettings appSettings)
         {
             this.userRepo = userRepo;
             this.codeRepo = codeRepo;
             this.codeGenerator = codeGenerator;
             this.credRepo = credRepo;
             this.hasher = hasher;
+            this.emailSender = emailSender;
+            this.appSettings = appSettings;
         }
 
-        public void Handle(RegisterUserInput input, Action<User> presenter)
+        public async Task Handle(RegisterUserInput input, Action<User> presenter)
         {
             if (string.IsNullOrWhiteSpace(input.FederationCode))
                 Error.InvalidFederationCode().Throw();
@@ -64,7 +73,7 @@ namespace Financials.Application.Users.UseCases
                     Password = hasher.HashPassword(input.Password)
                 });
 
-                codeRepo.Add(new ValidationCode() 
+                var emailCode = codeRepo.Add(new ValidationCode() 
                 {
                     Code = codeGenerator.Generate(30),
                     CreatedDate = DateTime.Now,
@@ -74,7 +83,12 @@ namespace Financials.Application.Users.UseCases
 
                 codeRepo.Delete(federationCode.UserId, ValidationCodeType.Federation);
 
-                // TODO: Send email to verify email
+                var email = new VerifyEmailEmail()
+                {
+                    To = input.Email,
+                    Url = string.Format(appSettings.EmailVerificationUrl, federationCode.UserId.ToString(), emailCode.Code)
+                };
+                await emailSender.Send(email);
 
                 presenter(user);
             }

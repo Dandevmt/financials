@@ -5,6 +5,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="MailKit" Version="2.3.1.6" />
+    <PackageReference Include="MimeKit" Version="2.3.1" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Financials.Application\Financials.Application.csproj" />
   </ItemGroup>
 

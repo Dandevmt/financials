@@ -4,6 +4,7 @@ using Financials.Application.Users;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Financials.Application.Security.UseCases
 {
@@ -26,7 +27,7 @@ namespace Financials.Application.Security.UseCases
             this.hasher = hasher;
         }
 
-        public void Handle(LoginInput input, Action<string> presenter)
+        public async Task Handle(LoginInput input, Action<string> presenter)
         {
             var creds = credRepo.Get(input.Email);
             if (creds == null)

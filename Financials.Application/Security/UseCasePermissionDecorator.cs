@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Financials.Application.Security
 {
@@ -17,7 +18,7 @@ namespace Financials.Application.Security
             this.access = access;
         }        
 
-        public void Handle(TInput input, Action<TOutput> presenter)
+        public async Task Handle(TInput input, Action<TOutput> presenter)
         {
             var uc = useCase;
             while (uc != null)
@@ -26,7 +27,7 @@ namespace Financials.Application.Security
                 {
                     if (access.CanDo(permUseCase.PermissionRequired))
                     {
-                        useCase.Handle(input, presenter);
+                        await useCase.Handle(input, presenter);
                         return;
                     }
                     else

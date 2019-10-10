@@ -3,12 +3,14 @@ using Financials.Api.Logging;
 using Financials.Application;
 using Financials.Application.Codes;
 using Financials.Application.Configuration;
+using Financials.Application.Email;
 using Financials.Application.Logging;
 using Financials.Application.Repositories;
 using Financials.Application.Security;
 using Financials.Application.Users;
 using Financials.Database;
 using Financials.Infrastructure.Codes;
+using Financials.Infrastructure.Email;
 using Financials.Infrastructure.Hashing;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
@@ -36,6 +38,10 @@ namespace Financials.Api.DependencyInjection
 
         public static void ConfigureApp(IApplicationBuilder app, IConfiguration configuration, Container container)
         {
+            foreach (var pair in configuration.GetChildren().OrderBy(p => p.Path))
+            {
+                Console.WriteLine($"{pair.Path} - {pair.Value}");
+            }
             app.UseSimpleInjector(container);
 
             // Connection Strings
@@ -56,6 +62,7 @@ namespace Financials.Api.DependencyInjection
             // Other Singletons
             container.RegisterSingleton<ICodeGenerator, CodeGenerator>();
             container.RegisterSingleton<IPasswordHasher>(() => new PasswordHasher());
+            container.RegisterSingleton<IEmailSender>(() => new EmailSender(new MailKit.Net.Smtp.SmtpClient(), appSettings.EmailSenderUrl, appSettings.EmailSenderUsername, appSettings.EmailSenderPassword, appSettings.Environment != ReleaseEnvironment.Prod));
 
             // Logging
             container.RegisterConditional(
@@ -84,6 +91,8 @@ namespace Financials.Api.DependencyInjection
             // Decorators
             container.RegisterDecorator(typeof(IUseCase<,>), typeof(UseCaseUnitOfWorkDecorator<,>));
             container.RegisterDecorator(typeof(IUseCase<,>), typeof(UseCasePermissionDecorator<,>), context => typeof(IPermissionRequired).IsAssignableFrom(context.ImplementationType));
+
+
 
             container.Verify();
         }

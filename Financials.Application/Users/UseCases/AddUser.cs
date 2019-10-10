@@ -5,6 +5,7 @@ using Financials.Entities;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Financials.Application.Users.UseCases
 {
@@ -32,7 +33,7 @@ namespace Financials.Application.Users.UseCases
             this.credRepo = credRepo;
         }
 
-        public void Handle(AddUserInput input, Action<User> presenter)
+        public async Task Handle(AddUserInput input, Action<User> presenter)
         {
             input.Validate();
 

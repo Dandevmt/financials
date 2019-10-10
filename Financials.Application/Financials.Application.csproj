@@ -9,7 +9,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Email\" />
+    <None Update="Email\Templates\base.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Email\Templates\VerifyEmail.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>
