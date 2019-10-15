@@ -9,9 +9,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Financials.Application", "F
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Financials.Database", "Financials.Database\Financials.Database.csproj", "{2AC38839-A08A-43F8-83D0-5107AFEAC430}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Financials.Entities", "Financials.Entities\Financials.Entities.csproj", "{8F47167B-4D82-4B8F-B194-8E3770EEC083}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Financials.Entities", "Financials.Entities\Financials.Entities.csproj", "{8F47167B-4D82-4B8F-B194-8E3770EEC083}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Financials.Infrastructure", "Financials.Infrastructure\Financials.Infrastructure.csproj", "{54C392B4-DD8A-49A0-AA1C-B08E449A8EF2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Financials.Infrastructure", "Financials.Infrastructure\Financials.Infrastructure.csproj", "{54C392B4-DD8A-49A0-AA1C-B08E449A8EF2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Financials.Application.Tests", "Financials.Application.Tests\Financials.Application.Tests.csproj", "{37CA932D-3DFC-4CA4-B376-C54D8458F0CF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{54C392B4-DD8A-49A0-AA1C-B08E449A8EF2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{54C392B4-DD8A-49A0-AA1C-B08E449A8EF2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{54C392B4-DD8A-49A0-AA1C-B08E449A8EF2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{37CA932D-3DFC-4CA4-B376-C54D8458F0CF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{37CA932D-3DFC-4CA4-B376-C54D8458F0CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{37CA932D-3DFC-4CA4-B376-C54D8458F0CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{37CA932D-3DFC-4CA4-B376-C54D8458F0CF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
