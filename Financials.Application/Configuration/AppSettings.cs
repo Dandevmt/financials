@@ -11,6 +11,7 @@ namespace Financials.Application.Configuration
         public string TokenIssuer { get; set; }
         public string TokenAudience { get; set; }
         public string EmailVerificationUrl { get; set; }
+        public string PasswordResetUrl { get; set; }
         public string EmailSenderUrl { get; set; }
         public string EmailSenderUsername { get; set; }
         public string EmailSenderPassword { get; set; }
