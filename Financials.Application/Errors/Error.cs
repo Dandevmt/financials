@@ -33,6 +33,7 @@ namespace Financials.Application.Errors
         public static Error InvalidEmailOrPassword() => new Error(ErrorCode.InvalidEmailOrPassword, "Invalid Email or Password");
         public static Error InvalidEmailVerificationCode() => new Error(ErrorCode.InvalidEmailVerificationCode, "Invalid Email Verification Code");
         public static Error InvalidFederationCode() => new Error(ErrorCode.InvalidFederationCode, "Invalid Federation Code");
+        public static Error InvalidCodePasswordOrUserId() => new Error(ErrorCode.InvalidCodePasswordOrUserId, "Invalid Code, Password Or User Id");
         public static Error UserNotFound() => new Error(ErrorCode.UserNotFound, "User Not Found");
 
     }

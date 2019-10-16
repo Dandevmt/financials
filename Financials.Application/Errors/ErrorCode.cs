@@ -9,6 +9,7 @@
         InvalidEmailOrPassword = 200,
         InvalidEmailVerificationCode = 250,
         InvalidFederationCode = 210,
+        InvalidCodePasswordOrUserId = 215,
         UserNotFound = 250,
         Forbidden = 403
     }
