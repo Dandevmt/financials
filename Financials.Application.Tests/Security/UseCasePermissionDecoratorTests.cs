@@ -1,4 +1,4 @@
-﻿using Financials.Application.Security;
+﻿using Financials.Application.UserManagement.Security;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System;

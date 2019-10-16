@@ -1,11 +1,11 @@
-﻿using Financials.Application.Repositories;
+﻿using Financials.Application.UserManagement.Repositories;
 using Financials.Entities;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Financials.Application.Users.UseCases
+namespace Financials.Application.UserManagement.UseCases
 {
     public class VerifyEmail : IUseCase<VerifyEmailInput, bool>
     {
@@ -22,7 +22,7 @@ namespace Financials.Application.Users.UseCases
         {
             var code = codeRepo.Get(input.UserId, ValidationCodeType.Email);
             if (code == null || !code.Code.Equals(input.Code) || (DateTime.Today - code.CreatedDate).TotalMinutes > 15)
-                Errors.Error.InvalidEmailVerificationCode().Throw();
+                UserManagementError.InvalidEmailVerificationCode().Throw();
 
             var creds = credRepo.Get(input.UserId);
             creds.EmailVerified = DateTime.Now;
@@ -30,7 +30,7 @@ namespace Financials.Application.Users.UseCases
             var res = credRepo.UpdateOne(creds);
             if (res == null)
             {
-                Errors.Error.EmailCouldNotUpdateDatabase().Throw();
+                UserManagementError.EmailCouldNotUpdateDatabase().Throw();
             } else
             {
                 presenter(true);

@@ -1,4 +1,4 @@
-﻿using Financials.Application.Codes;
+﻿using Financials.Application.UserManagement.Codes;
 using System;
 using System.Collections.Generic;
 using System.Security.Cryptography;

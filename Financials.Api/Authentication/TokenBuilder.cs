@@ -1,5 +1,5 @@
 ﻿using Financials.Application.Configuration;
-using Financials.Application.Security;
+using Financials.Application.UserManagement.Security;
 using Financials.Entities;
 using Microsoft.IdentityModel.Tokens;
 using System;

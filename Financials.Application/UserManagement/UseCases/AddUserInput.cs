@@ -1,6 +1,6 @@
 ﻿using Financials.Application.Errors;
 
-namespace Financials.Application.Users.UseCases
+namespace Financials.Application.UserManagement.UseCases
 {
     public class AddUserInput
     {

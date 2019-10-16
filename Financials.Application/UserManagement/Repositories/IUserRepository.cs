@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Financials.Application.Repositories
+namespace Financials.Application.UserManagement.Repositories
 {
     public interface IUserRepository
     {

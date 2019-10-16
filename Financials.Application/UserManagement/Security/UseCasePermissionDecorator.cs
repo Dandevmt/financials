@@ -5,7 +5,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Financials.Application.Security
+namespace Financials.Application.UserManagement.Security
 {
     public class UseCasePermissionDecorator<TInput, TOutput> : IUseCase<TInput, TOutput>
     {        

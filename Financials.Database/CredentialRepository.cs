@@ -1,4 +1,4 @@
-﻿using Financials.Application.Repositories;
+﻿using Financials.Application.UserManagement.Repositories;
 using Financials.Entities;
 using MongoDB.Driver;
 using System;

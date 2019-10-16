@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Financials.Application.Security
+namespace Financials.Application.UserManagement.Security
 {
     public interface IPermissionRequired
     {

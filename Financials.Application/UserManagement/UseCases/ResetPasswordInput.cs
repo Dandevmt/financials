@@ -1,7 +1,7 @@
 ﻿using Financials.Application.Errors;
 using System;
 
-namespace Financials.Application.Users.UseCases
+namespace Financials.Application.UserManagement.UseCases
 {
     public class ResetPasswordInput
     {

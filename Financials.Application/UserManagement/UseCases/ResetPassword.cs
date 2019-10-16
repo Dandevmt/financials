@@ -1,12 +1,12 @@
 ﻿using Financials.Application.Email;
-using Financials.Application.Repositories;
-using Financials.Application.Security;
+using Financials.Application.UserManagement.Repositories;
+using Financials.Application.UserManagement.Security;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Financials.Application.Users.UseCases
+namespace Financials.Application.UserManagement.UseCases
 {
     public class ResetPassword : IUseCase<ResetPasswordInput, bool>
     {
@@ -39,14 +39,14 @@ namespace Financials.Application.Users.UseCases
             if (!codesMatch && !passMatch)
             {
                 presenter(false);
-                Errors.Error.InvalidCodePasswordOrUserId().Throw();                
+                UserManagementError.InvalidCodePasswordOrUserId().Throw();                
             }                
 
             // Creds shouldn't be null
             if (creds == null)
             {
                 presenter(false);
-                Errors.Error.InvalidCodePasswordOrUserId().Throw();
+                UserManagementError.InvalidCodePasswordOrUserId().Throw();
             }                
 
             creds.Password = hasher.HashPassword(input.NewPassword);

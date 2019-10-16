@@ -1,13 +1,13 @@
-﻿using Financials.Application.Codes;
-using Financials.Application.Repositories;
-using Financials.Application.Security;
+﻿using Financials.Application.UserManagement.Codes;
+using Financials.Application.UserManagement.Repositories;
+using Financials.Application.UserManagement.Security;
 using Financials.Entities;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Financials.Application.Users.UseCases
+namespace Financials.Application.UserManagement.UseCases
 {
     public class AddUser : IUseCase<AddUserInput, User>, IPermissionRequired
     {

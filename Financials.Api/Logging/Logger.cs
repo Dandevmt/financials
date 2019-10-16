@@ -1,6 +1,6 @@
 ﻿using Financials.Application.Configuration;
 using Financials.Application.Logging;
-using Financials.Application.Security;
+using Financials.Application.UserManagement.Security;
 using MongoDB.Driver;
 using Serilog;
 using System;

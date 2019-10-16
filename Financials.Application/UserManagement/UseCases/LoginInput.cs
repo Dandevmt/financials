@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Financials.Application.Security.UseCases
+namespace Financials.Application.UserManagement.UseCases
 {
     public class LoginInput
     {

@@ -1,5 +1,5 @@
-﻿using Financials.Application.Repositories;
-using Financials.Application.Security;
+﻿using Financials.Application.UserManagement.Repositories;
+using Financials.Application.UserManagement.Security;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
@@ -42,7 +42,6 @@ namespace Financials.Api
 
         public bool CanDo(Permission permission)
         {
-            return true;
             user = CurrentUser();
 
             if (user == null || user.Permissions == null || user.Permissions.Count == 0)

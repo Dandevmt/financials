@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Financials.Application;
-using Financials.Application.Security;
-using Financials.Application.Security.UseCases;
+using Financials.Application.UserManagement.UseCases;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 

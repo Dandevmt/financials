@@ -1,13 +1,13 @@
 ﻿using Financials.Api.Authentication;
 using Financials.Api.Logging;
 using Financials.Application;
-using Financials.Application.Codes;
+using Financials.Application.UserManagement.Codes;
 using Financials.Application.Configuration;
 using Financials.Application.Email;
 using Financials.Application.Logging;
-using Financials.Application.Repositories;
-using Financials.Application.Security;
-using Financials.Application.Users;
+using Financials.Application.UserManagement.Repositories;
+using Financials.Application.UserManagement.Security;
+using Financials.Application.UserManagement;
 using Financials.Database;
 using Financials.Infrastructure.Codes;
 using Financials.Infrastructure.Email;

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Financials.Application.Codes
+namespace Financials.Application.UserManagement.Codes
 {
     public interface ICodeGenerator
     {

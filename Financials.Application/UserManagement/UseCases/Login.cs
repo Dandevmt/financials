@@ -1,12 +1,12 @@
 ﻿using Financials.Application.Errors;
-using Financials.Application.Repositories;
-using Financials.Application.Users;
+using Financials.Application.UserManagement.Repositories;
+using Financials.Application.UserManagement.Security;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Financials.Application.Security.UseCases
+namespace Financials.Application.UserManagement.UseCases
 {
     public class Login : IUseCase<LoginInput, string>
     {
@@ -31,17 +31,17 @@ namespace Financials.Application.Security.UseCases
         {
             var creds = credRepo.Get(input.Email);
             if (creds == null)
-                Error.InvalidEmailOrPassword().Throw();
+                UserManagementError.InvalidEmailOrPassword().Throw();
 
             if (creds.EmailVerified == null)
-                Error.EmailNotVerified().Throw();
+                UserManagementError.EmailNotVerified().Throw();
 
             if (!hasher.VerifyPassword(creds.Password, input.Password))
-                Error.InvalidEmailOrPassword().Throw();
+                UserManagementError.InvalidEmailOrPassword().Throw();
 
             var user = userRepo.Get(creds.UserId);
             if (user == null)
-                Error.UserNotFound().Throw($"User with id of {creds.UserId.ToString()} was not found");
+                UserManagementError.UserNotFound().Throw($"User with id of {creds.UserId.ToString()} was not found");
 
             presenter(tokenBuilder.Build(user));
         }

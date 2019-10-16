@@ -1,16 +1,16 @@
-﻿using Financials.Application.Codes;
+﻿using Financials.Application.UserManagement.Codes;
 using Financials.Application.Configuration;
 using Financials.Application.Email;
 using Financials.Application.Errors;
-using Financials.Application.Repositories;
-using Financials.Application.Security;
+using Financials.Application.UserManagement.Repositories;
+using Financials.Application.UserManagement.Security;
 using Financials.Entities;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Financials.Application.Users.UseCases
+namespace Financials.Application.UserManagement.UseCases
 {
     public class RegisterUser : IUseCase<RegisterUserInput, User>
     {
@@ -42,16 +42,16 @@ namespace Financials.Application.Users.UseCases
         public async Task Handle(RegisterUserInput input, Action<User> presenter)
         {
             if (string.IsNullOrWhiteSpace(input.FederationCode))
-                Error.InvalidFederationCode().Throw();
+                UserManagementError.InvalidFederationCode().Throw();
 
             var creds = GetCredentials(input.Email);
             if (creds != null)
-                Error.EmailExists().Throw();
+                UserManagementError.EmailExists().Throw();
 
             var federationCode = GetValidationCode(input.FederationCode);
             if (federationCode == null || federationCode.Code != input.FederationCode || (DateTime.Today - federationCode.CreatedDate).TotalDays > 15)
             {
-                Error.InvalidFederationCode().Throw();
+                UserManagementError.InvalidFederationCode().Throw();
             }
             else
             {
