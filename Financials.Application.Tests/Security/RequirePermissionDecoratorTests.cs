@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 namespace Financials.Application.Tests.Security
 {
     [TestClass]
-    public class UseCasePermissionDecoratorTests
+    public class RequirePermissionDecoratorTests
     {
         Mock<IAccess> access;
 
