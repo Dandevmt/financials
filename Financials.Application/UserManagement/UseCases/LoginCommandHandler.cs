@@ -1,5 +1,4 @@
 ﻿using Financials.Application.CQRS;
-using Financials.Application.Errors;
 using Financials.Application.UserManagement.Repositories;
 using Financials.Application.UserManagement.Security;
 using System;

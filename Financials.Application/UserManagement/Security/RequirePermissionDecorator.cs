@@ -17,7 +17,7 @@ namespace Financials.Application.UserManagement.Security
         {
             this.access = access;
         }
-        public async Task<CommandResult> Handle(TCommand command)
+        public Task<CommandResult> Handle(TCommand command)
         {
             var originalHandler = GetDecoratedCommand();
             var attr = originalHandler.GetType().GetCustomAttribute<RequirePermissionAttribute>();
@@ -26,11 +26,11 @@ namespace Financials.Application.UserManagement.Security
             
             if (access.CanDo(attr.Permission))
             {
-                return await commandHandler.Handle(command);
+                return commandHandler.Handle(command);
             }
             else
             {
-                return CommandResult.Fail(CommandError.Forbidden($"Permission denied for {attr.Permission}"));
+                return CommandResult.Fail(CommandError.Forbidden($"Permission denied for {attr.Permission}")).AsTask();
             }
         }
     }

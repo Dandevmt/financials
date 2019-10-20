@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Financials.Application;
 using Financials.Application.UserManagement.Codes;
 using Financials.Application.Configuration;
-using Financials.Application.Errors;
 using Financials.Application.UserManagement.Security;
 using Financials.Application.UserManagement;
 using Financials.Application.UserManagement.UseCases;

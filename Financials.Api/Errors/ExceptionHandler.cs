@@ -1,5 +1,4 @@
-﻿using Financials.Application.Errors;
-using Financials.Application.Logging;
+﻿using Financials.Application.Logging;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
@@ -26,17 +25,8 @@ namespace Financials.Api.Errors
                     var contextFeature = context.Features.Get<IExceptionHandlerFeature>();
                     if (contextFeature != null)
                     {
-                        if (contextFeature.Error is ErrorException ex)
-                        {
-                            logger.Log(new LogEntry() { LogLevel = LogLevel.Error, Exception = ex, Message = ex.Error.Message });
-                            context.Response.StatusCode = (int)ex.Error.Code;
-                            await context.Response.WriteAsync(ex.ToString());
-                        }
-                        else
-                        { 
-                            logger.Log(new LogEntry() { LogLevel = LogLevel.Fatal, Exception = contextFeature.Error, Message = contextFeature.Error.Message });
-                            await context.Response.WriteAsync(contextFeature.Error.ToString());
-                        }                        
+                        logger.Log(new LogEntry() { LogLevel = LogLevel.Fatal, Exception = contextFeature.Error, Message = contextFeature.Error.Message });
+                        await context.Response.WriteAsync(contextFeature.Error.ToString());
                     }
                 });
             });

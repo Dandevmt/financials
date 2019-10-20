@@ -1,5 +1,4 @@
 ﻿using Financials.Application.CQRS;
-using Financials.Application.Errors;
 using System;
 using System.Collections.Generic;
 using System.Text;
