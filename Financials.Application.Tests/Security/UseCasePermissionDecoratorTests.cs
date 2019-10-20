@@ -1,8 +1,10 @@
-﻿using Financials.Application.UserManagement.Security;
+﻿using Financials.Application.CQRS;
+using Financials.Application.UserManagement.Security;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -11,61 +13,68 @@ namespace Financials.Application.Tests.Security
     [TestClass]
     public class UseCasePermissionDecoratorTests
     {
-        Mock<IUseCase<string, string>> useCase;
         Mock<IAccess> access;
-        Mock<IPermissionRequired> useCasePerm;
 
         [TestInitialize]
         public void Initialize()
         {
-            useCase = new Mock<IUseCase<string, string>>();
-            useCase.Setup(x => x.Handle(It.IsAny<string>(), It.IsAny<Action<string>>())).Returns(Task.FromResult("test"));
-                        
             access = new Mock<IAccess>();            
+        }
+
+        class TestCommand : ICommand { }
+
+        class TestHandlerWithoutPermission : ICommandHandler<TestCommand>
+        {
+            public Task<CommandResult> Handle(TestCommand command)
+            {
+                return CommandResult.Success().AsTask();
+            }
+        }
+        [RequirePermission(Permission.AddUser)]
+        class TestHandlerWithPermission : ICommandHandler<TestCommand>
+        {
+            public Task<CommandResult> Handle(TestCommand command)
+            {
+                return CommandResult.Success().AsTask();
+            }
         }
 
         [TestMethod]
         public async Task CanDoNotCalled()
-        {
-            //var decorator = new UseCasePermissionDecorator<string, string>(useCase.Object, access.Object);
+        {          
 
-            //await Assert.ThrowsExceptionAsync<Exception>(async () => 
-            //{
-            //    await decorator.Handle("test", s => { });
-            //});
+            var decorator = new RequirePermissionDecorator<TestCommand>(new TestHandlerWithoutPermission(), access.Object);
 
-            //access.Verify(x => x.CanDo(It.IsAny<Permission>()), Times.Never);
+            await Assert.ThrowsExceptionAsync<Exception>(async () =>
+            {
+                await decorator.Handle(new TestCommand());
+            });
+
+            access.Verify(x => x.CanDo(It.IsAny<Permission>()), Times.Never);
         }
 
         [TestMethod]
         public async Task CanDoCalled()
         {
-            //useCasePerm = useCase.As<IPermissionRequired>();
-            //useCasePerm.Setup(x => x.PermissionRequired).Returns(Permission.AddUser);
+            access.Setup(x => x.CanDo(Permission.AddUser)).Returns(true);
 
-            //access.Setup(x => x.CanDo(Permission.AddUser)).Returns(true);
+            var decorator = new RequirePermissionDecorator<TestCommand>(new TestHandlerWithPermission(), access.Object);
+            var result = await decorator.Handle(new TestCommand());
 
-            //var decorator = new UseCasePermissionDecorator<string, string>(useCase.Object, access.Object);
-            //await decorator.Handle("test", (s) => {});
-
-            //access.Verify(x => x.CanDo(useCasePerm.Object.PermissionRequired), Times.Once);
+            access.Verify(x => x.CanDo(Permission.AddUser), Times.Once);
         }
 
 
         [TestMethod]
         public async Task PermissionDenied()
         {
-            //useCasePerm = useCase.As<IPermissionRequired>();
-            //useCasePerm.Setup(x => x.PermissionRequired).Returns(Permission.AddUser);
+            access.Setup(x => x.CanDo(Permission.AddUser)).Returns(false);
 
-            //access.Setup(x => x.CanDo(useCasePerm.Object.PermissionRequired)).Returns(false);
+            var decorator = new RequirePermissionDecorator<TestCommand>(new TestHandlerWithPermission(), access.Object);
+            var result = await decorator.Handle(new TestCommand());
 
-            //var decorator = new UseCasePermissionDecorator<string, string>(useCase.Object, access.Object);
-
-            //await Assert.ThrowsExceptionAsync<Errors.ErrorException>(async () => 
-            //{
-            //    await decorator.Handle("test", s => { });
-            //});
+            Assert.IsFalse(result.IsSuccess);
+            Assert.AreEqual(CommandError.Forbidden().Code, result.Error.Code);
         }
     }
 }
