@@ -17,7 +17,7 @@ namespace Financials.Application.UserManagement.Security
         {
             this.access = access;
         }
-        public Task<CommandResult> Handle(TCommand command)
+        public override Task<CommandResult> Handle(TCommand command)
         {
             var originalHandler = GetDecoratedCommand();
             var attr = originalHandler.GetType().GetCustomAttribute<RequirePermissionAttribute>();

@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Financials.Application.CQRS
 {
-    public class CommandDecorator<TCommand> where TCommand : ICommand
+    public abstract class CommandDecorator<TCommand> : ICommandHandler<TCommand> where TCommand : ICommand
     {
         protected readonly ICommandHandler<TCommand> commandHandler;
 
@@ -14,6 +15,8 @@ namespace Financials.Application.CQRS
         {
             this.commandHandler = commandHandler;
         }
+
+        public abstract Task<CommandResult> Handle(TCommand command);
 
         protected ICommandHandler<TCommand> GetDecoratedCommand()
         {

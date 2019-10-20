@@ -19,7 +19,7 @@ namespace Financials.Database
             this.session = session;
         }
 
-        public Task<CommandResult> Handle(TCommand input)
+        public override Task<CommandResult> Handle(TCommand input)
         {
             using (session)
             {
