@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
+using Financials.Application.CQRS;
 
 namespace Financials.Api.Controllers
 {
@@ -23,11 +24,11 @@ namespace Financials.Api.Controllers
     [ApiController]
     public class UserController : ControllerBase 
     {
-        private readonly IUseCase<AddUserInput, User> addUserUseCase;
+        private readonly ICommandHandler<AddUserCommand> addUserCommand;
 
-        public UserController(IUseCase<AddUserInput, User> addUserUseCase)
+        public UserController(ICommandHandler<AddUserCommand> addUserCommand)
         {
-            this.addUserUseCase = addUserUseCase;
+            this.addUserCommand = addUserCommand;
         }
 
         [HttpGet]
@@ -36,13 +37,11 @@ namespace Financials.Api.Controllers
             return new User();
         }
 
-        [HttpPost, Authorize]
-        public IActionResult Post([FromBody] AddUserInput input)
+        [HttpPost]
+        public IActionResult Post([FromBody] AddUserCommand input)
         {
-            User user = null;
-            addUserUseCase.Handle(input, u => user = u);
-            return Ok(user);
-
+            var result = addUserCommand.Handle(input);
+            return Ok(result);
         }
     }
 }

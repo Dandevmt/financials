@@ -21,6 +21,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Financials.Application.CQRS;
 
 namespace Financials.Api.DependencyInjection
 {
@@ -86,7 +87,12 @@ namespace Financials.Api.DependencyInjection
             container.Register<IAccess, Access>(Lifestyle.Scoped);
 
             // Use Case for AOP
+            container.Register(typeof(ICommandHandler<>), typeof(ICommandHandler<>).Assembly);
             container.Register(typeof(IUseCase<,>), typeof(IUseCase<,>).Assembly);
+
+            container.RegisterDecorator(typeof(ICommandHandler<>), typeof(RequirePermissionDecorator<>), 
+                context => context.ImplementationType.GetCustomAttributes(typeof(RequirePermissionAttribute), false).Any());
+
 
             // Decorators
             container.RegisterDecorator(typeof(IUseCase<,>), typeof(UseCaseUnitOfWorkDecorator<,>));
