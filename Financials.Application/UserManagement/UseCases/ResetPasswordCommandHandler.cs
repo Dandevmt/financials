@@ -1,4 +1,5 @@
-﻿using Financials.Application.Email;
+﻿using Financials.Application.CQRS;
+using Financials.Application.Email;
 using Financials.Application.UserManagement.Repositories;
 using Financials.Application.UserManagement.Security;
 using System;
@@ -8,13 +9,13 @@ using System.Threading.Tasks;
 
 namespace Financials.Application.UserManagement.UseCases
 {
-    public class ResetPassword : IUseCase<ResetPasswordInput, bool>
+    public class ResetPasswordCommandHandler : ICommandHandler<ResetPasswordCommand>
     {
         private IValidationCodeRepository codeRepo;
         private ICredentialRepository credRepo;
         private IPasswordHasher hasher;
         private IEmailSender emailSender;
-        public ResetPassword(
+        public ResetPasswordCommandHandler(
             IValidationCodeRepository codeRepo, 
             ICredentialRepository credRepo,
             IPasswordHasher hasher,
@@ -26,9 +27,10 @@ namespace Financials.Application.UserManagement.UseCases
             this.emailSender = emailSender;
         }
 
-        public async Task Handle(ResetPasswordInput input, Action<bool> presenter)
+        public async Task<CommandResult> Handle(ResetPasswordCommand input)
         {
-            input.Validate();
+            if (!input.Validate(out ValidationError error))
+                return CommandResult.Fail(error);
 
             var code = codeRepo.Get(input.UserId, Entities.ValidationCodeType.PasswordReset);
             var creds = credRepo.Get(input.UserId);
@@ -38,15 +40,13 @@ namespace Financials.Application.UserManagement.UseCases
 
             if (!codesMatch && !passMatch)
             {
-                presenter(false);
-                UserManagementError.InvalidCodePasswordOrUserId().Throw();                
+                return CommandResult.Fail(UserManagementError.InvalidCodePasswordOrUserId());             
             }                
 
             // Creds shouldn't be null
             if (creds == null)
             {
-                presenter(false);
-                UserManagementError.InvalidCodePasswordOrUserId().Throw();
+                return CommandResult.Fail(UserManagementError.InvalidCodePasswordOrUserId());
             }                
 
             creds.Password = hasher.HashPassword(input.NewPassword);
@@ -58,7 +58,7 @@ namespace Financials.Application.UserManagement.UseCases
                 To = creds.Email
             });
 
-            presenter(true);
+            return CommandResult.Success();
         }
     }
 }

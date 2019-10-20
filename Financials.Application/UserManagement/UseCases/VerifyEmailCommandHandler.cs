@@ -1,4 +1,5 @@
-﻿using Financials.Application.UserManagement.Repositories;
+﻿using Financials.Application.CQRS;
+using Financials.Application.UserManagement.Repositories;
 using Financials.Entities;
 using System;
 using System.Collections.Generic;
@@ -7,22 +8,22 @@ using System.Threading.Tasks;
 
 namespace Financials.Application.UserManagement.UseCases
 {
-    public class VerifyEmail : IUseCase<VerifyEmailInput, bool>
+    public class VerifyEmailCommandHandler : ICommandHandler<VerifyEmailCommand>
     {
         private IValidationCodeRepository codeRepo;
         private ICredentialRepository credRepo;
 
-        public VerifyEmail(IValidationCodeRepository codeRepo, ICredentialRepository credRepo)
+        public VerifyEmailCommandHandler(IValidationCodeRepository codeRepo, ICredentialRepository credRepo)
         {
             this.codeRepo = codeRepo;
             this.credRepo = credRepo;
         }
 
-        public async Task Handle(VerifyEmailInput input, Action<bool> presenter)
+        public Task<CommandResult> Handle(VerifyEmailCommand input)
         {
             var code = codeRepo.Get(input.UserId, ValidationCodeType.Email);
             if (code == null || !code.Code.Equals(input.Code) || (DateTime.Today - code.CreatedDate).TotalMinutes > 15)
-                UserManagementError.InvalidEmailVerificationCode().Throw();
+                return CommandResult.Fail(UserManagementError.InvalidEmailVerificationCode()).AsTask();
 
             var creds = credRepo.Get(input.UserId);
             creds.EmailVerified = DateTime.Now;
@@ -30,10 +31,10 @@ namespace Financials.Application.UserManagement.UseCases
             var res = credRepo.UpdateOne(creds);
             if (res == null)
             {
-                UserManagementError.EmailCouldNotUpdateDatabase().Throw();
+                return CommandResult.Fail(UserManagementError.EmailCouldNotUpdateDatabase()).AsTask();
             } else
             {
-                presenter(true);
+                return CommandResult.Success().AsTask();
             }
         }
     }

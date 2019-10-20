@@ -13,15 +13,15 @@ namespace Financials.Api.Controllers
     [ApiController]
     public class ResetPasswordController : ControllerBase
     {
-        private readonly IUseCase<ResetPasswordInput, bool> useCase;
+        private readonly IUseCase<ResetPasswordCommand, bool> useCase;
 
-        public ResetPasswordController(IUseCase<ResetPasswordInput, bool> useCase)
+        public ResetPasswordController(IUseCase<ResetPasswordCommand, bool> useCase)
         {
             this.useCase = useCase;
         }
 
         [HttpPost]
-        public async Task<bool> Post([FromBody]ResetPasswordInput input)
+        public async Task<bool> Post([FromBody]ResetPasswordCommand input)
         {
             bool success = false;
             await useCase.Handle(input, s => { success = s; });

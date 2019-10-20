@@ -17,7 +17,7 @@ namespace Financials.Application.UserManagement.UseCases
         public string Zip { get; set; }
         public string Country { get; set; }
 
-        public bool Validate(out ValidationError errors)
+        public virtual bool Validate(out ValidationError errors)
         {
             ValidationError error = ValidationError.New();
             if (string.IsNullOrWhiteSpace(FirstName))

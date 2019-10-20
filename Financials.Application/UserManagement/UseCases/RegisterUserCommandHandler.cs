@@ -1,7 +1,6 @@
 ﻿using Financials.Application.UserManagement.Codes;
 using Financials.Application.Configuration;
 using Financials.Application.Email;
-using Financials.Application.Errors;
 using Financials.Application.UserManagement.Repositories;
 using Financials.Application.UserManagement.Security;
 using Financials.Entities;
@@ -9,10 +8,11 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using Financials.Application.CQRS;
 
 namespace Financials.Application.UserManagement.UseCases
 {
-    public class RegisterUser : IUseCase<RegisterUserInput, User>
+    public class RegisterUserCommandHandler : ICommandHandler<RegisterUserCommand>
     {
         private readonly IUserRepository userRepo;
         private readonly IValidationCodeRepository codeRepo;
@@ -21,7 +21,7 @@ namespace Financials.Application.UserManagement.UseCases
         private readonly IPasswordHasher hasher;
         private readonly IEmailSender emailSender;
         private readonly AppSettings appSettings;
-        public RegisterUser(
+        public RegisterUserCommandHandler(
             IUserRepository userRepo, 
             IValidationCodeRepository codeRepo, 
             ICodeGenerator codeGenerator,
@@ -39,19 +39,19 @@ namespace Financials.Application.UserManagement.UseCases
             this.appSettings = appSettings;
         }
 
-        public async Task Handle(RegisterUserInput input, Action<User> presenter)
+        public async Task<CommandResult> Handle(RegisterUserCommand input)
         {
-            if (string.IsNullOrWhiteSpace(input.FederationCode))
-                UserManagementError.InvalidFederationCode().Throw();
+            if (!input.Validate(out ValidationError error))
+                return CommandResult.Fail(error);
 
             var creds = GetCredentials(input.Email);
             if (creds != null)
-                UserManagementError.EmailExists().Throw();
+                return CommandResult.Fail(UserManagementError.EmailExists());
 
             var federationCode = GetValidationCode(input.FederationCode);
             if (federationCode == null || federationCode.Code != input.FederationCode || (DateTime.Today - federationCode.CreatedDate).TotalDays > 15)
             {
-                UserManagementError.InvalidFederationCode().Throw();
+                return CommandResult.Fail(UserManagementError.InvalidFederationCode());
             }
             else
             {
@@ -90,10 +90,8 @@ namespace Financials.Application.UserManagement.UseCases
                 };
                 await emailSender.Send(email);
 
-                presenter(user);
-            }
-
-            presenter(null);                  
+                return CommandResult<User>.Success(user);
+            }                
         }
 
         private ValidationCode GetValidationCode(string federationCode)

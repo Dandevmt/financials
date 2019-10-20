@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Financials.Application.CQRS
 {
@@ -17,6 +18,14 @@ namespace Financials.Application.CQRS
             };
         }
 
+        public static CommandResult Fail()
+        {
+            return new CommandResult()
+            {
+                IsSuccess = false
+            };
+        }
+
         public static CommandResult Fail(CommandError error)
         {
             return new CommandResult()
@@ -30,6 +39,11 @@ namespace Financials.Application.CQRS
         {
             Error.AddError(error);
             return this;
+        }
+
+        public Task<CommandResult> AsTask()
+        {
+            return Task.FromResult(this);
         }
     }
 

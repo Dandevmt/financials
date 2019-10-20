@@ -1,4 +1,5 @@
-﻿using Financials.Application.Errors;
+﻿using Financials.Application.CQRS;
+using Financials.Application.Errors;
 using Financials.Application.UserManagement.Repositories;
 using Financials.Application.UserManagement.Security;
 using System;
@@ -8,14 +9,14 @@ using System.Threading.Tasks;
 
 namespace Financials.Application.UserManagement.UseCases
 {
-    public class Login : IUseCase<LoginInput, string>
+    public class LoginCommandHandler : ICommandHandler<LoginCommand>
     {
         private readonly ITokenBuilder tokenBuilder;
         private readonly ICredentialRepository credRepo;
         private readonly IUserRepository userRepo;
         private readonly IPasswordHasher hasher;
 
-        public Login(
+        public LoginCommandHandler(
             ITokenBuilder tokenBuilder, 
             ICredentialRepository credRepo, 
             IPasswordHasher hasher,
@@ -27,23 +28,23 @@ namespace Financials.Application.UserManagement.UseCases
             this.hasher = hasher;
         }
 
-        public async Task Handle(LoginInput input, Action<string> presenter)
+        public Task<CommandResult> Handle(LoginCommand input)
         {
             var creds = credRepo.Get(input.Email);
             if (creds == null)
-                UserManagementError.InvalidEmailOrPassword().Throw();
+                return CommandResult.Fail(UserManagementError.InvalidEmailOrPassword()).AsTask();
 
             if (creds.EmailVerified == null)
-                UserManagementError.EmailNotVerified().Throw();
+                return CommandResult.Fail(UserManagementError.EmailNotVerified()).AsTask();
 
             if (!hasher.VerifyPassword(creds.Password, input.Password))
-                UserManagementError.InvalidEmailOrPassword().Throw();
+                return CommandResult.Fail(UserManagementError.InvalidEmailOrPassword()).AsTask();
 
             var user = userRepo.Get(creds.UserId);
             if (user == null)
-                UserManagementError.UserNotFound().Throw($"User with id of {creds.UserId.ToString()} was not found");
+                return CommandResult.Fail(UserManagementError.UserNotFound($"User with id of {creds.UserId.ToString()} was not found")).AsTask();
 
-            presenter(tokenBuilder.Build(user));
+            return CommandResult<string>.Success(tokenBuilder.Build(user)).AsTask();
         }
     }
 }

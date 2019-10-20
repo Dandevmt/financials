@@ -1,9 +1,9 @@
-﻿using Financials.Application.Errors;
+﻿using Financials.Application.CQRS;
 using System;
 
 namespace Financials.Application.UserManagement.UseCases
 {
-    public class ResetPasswordInput
+    public class ResetPasswordCommand : ICommand
     {
         public Guid UserId { get; set; }
         public string ResetCode { get; set; }
@@ -11,7 +11,7 @@ namespace Financials.Application.UserManagement.UseCases
         public string NewPassword { get; set; }
         public string NewPassword2 { get; set; }
 
-        public void Validate()
+        public bool Validate(out ValidationError errors)
         {
             ValidationError error = ValidationError.New();
             if (string.IsNullOrWhiteSpace(OldPassword) && string.IsNullOrWhiteSpace(ResetCode))
@@ -32,7 +32,14 @@ namespace Financials.Application.UserManagement.UseCases
             if (!NewPassword.Equals(NewPassword2))
                 error.AddError(nameof(NewPassword2), $"Passwords must match");
 
-            error.ThrowIfError();
+            if (error.HasError)
+            {
+                errors = error;
+                return false;
+            }
+
+            errors = null;
+            return true;
 
         }
     }

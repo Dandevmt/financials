@@ -6,6 +6,7 @@ using Financials.Entities;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Financials.Application.UserManagement.UseCases
 {
@@ -32,16 +33,16 @@ namespace Financials.Application.UserManagement.UseCases
             this.credRepo = credRepo;
         }
 
-        public CommandResult Handle(AddUserCommand command)
+        public Task<CommandResult> Handle(AddUserCommand command)
         {
             if (!command.Validate(out ValidationError error))
-                return CommandResult.Fail(error);
+                return CommandResult.Fail(error).AsTask();
 
             var user = AddUserFromInput(command);
             var creds = AddCredentialsIfEmail(command.Email, user.Id);
             var validationCode = AddValidationCodeIfNoEmail(user.Id, command.Email);
 
-            return CommandResult<User>.Success(user);
+            return CommandResult<User>.Success(user).AsTask();
         }
 
         private User AddUserFromInput(AddUserCommand input)

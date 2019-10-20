@@ -14,15 +14,15 @@ namespace Financials.Api.Controllers
     [ApiController]
     public class RegisterUserController : ControllerBase
     {
-        private readonly IUseCase<RegisterUserInput, User> registerUserUseCase;
+        private readonly IUseCase<RegisterUserCommand, User> registerUserUseCase;
 
-        public RegisterUserController(IUseCase<RegisterUserInput, User> registerUserUseCase)
+        public RegisterUserController(IUseCase<RegisterUserCommand, User> registerUserUseCase)
         {
             this.registerUserUseCase = registerUserUseCase;
         }
 
         [HttpPost]
-        public async Task<User> Register([FromBody] RegisterUserInput input)
+        public async Task<User> Register([FromBody] RegisterUserCommand input)
         {
             User user = null;
             await registerUserUseCase.Handle(input, u => user = u);

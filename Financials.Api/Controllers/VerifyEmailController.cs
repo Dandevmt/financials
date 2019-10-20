@@ -13,9 +13,9 @@ namespace Financials.Api.Controllers
     [ApiController]
     public class VerifyEmailController : ControllerBase
     {
-        private readonly IUseCase<VerifyEmailInput, bool> verifyEmailUseCase;
+        private readonly IUseCase<VerifyEmailCommand, bool> verifyEmailUseCase;
 
-        public VerifyEmailController(IUseCase<VerifyEmailInput, bool> verifyEmailUseCase)
+        public VerifyEmailController(IUseCase<VerifyEmailCommand, bool> verifyEmailUseCase)
         {
             this.verifyEmailUseCase = verifyEmailUseCase;
         }
@@ -24,7 +24,7 @@ namespace Financials.Api.Controllers
         public bool VerifyEmail(Guid userId, string code)
         {
             bool verified = false;
-            verifyEmailUseCase.Handle(new VerifyEmailInput() { UserId = userId, Code = code }, ver => 
+            verifyEmailUseCase.Handle(new VerifyEmailCommand() { UserId = userId, Code = code }, ver => 
             {
                 verified = ver;            
             });

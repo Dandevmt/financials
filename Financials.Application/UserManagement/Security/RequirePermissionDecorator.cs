@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Reflection;
+using System.Threading.Tasks;
 
 namespace Financials.Application.UserManagement.Security
 {
@@ -16,7 +17,7 @@ namespace Financials.Application.UserManagement.Security
         {
             this.access = access;
         }
-        public CommandResult Handle(TCommand command)
+        public async Task<CommandResult> Handle(TCommand command)
         {
             var originalHandler = GetDecoratedCommand();
             var attr = originalHandler.GetType().GetCustomAttribute<RequirePermissionAttribute>();
@@ -25,7 +26,7 @@ namespace Financials.Application.UserManagement.Security
             
             if (access.CanDo(attr.Permission))
             {
-                return commandHandler.Handle(command);
+                return await commandHandler.Handle(command);
             }
             else
             {

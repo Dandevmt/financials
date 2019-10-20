@@ -86,21 +86,16 @@ namespace Financials.Api.DependencyInjection
             container.Register<ITokenBuilder, TokenBuilder>(Lifestyle.Singleton);
             container.Register<IAccess, Access>(Lifestyle.Scoped);
 
-            // Use Case for AOP
-            container.Register(typeof(ICommandHandler<>), typeof(ICommandHandler<>).Assembly);
-            container.Register(typeof(IUseCase<,>), typeof(IUseCase<,>).Assembly);
-
-            container.RegisterDecorator(typeof(ICommandHandler<>), typeof(RequirePermissionDecorator<>), 
-                context => context.ImplementationType.GetCustomAttributes(typeof(RequirePermissionAttribute), false).Any());
-
+            // Command Dispatcher and Container Wrapper
             container.RegisterSingleton<IProvider, ProviderWrapper>();
             container.RegisterSingleton<Dispatcher>();
 
+            // Commands
+            container.Register(typeof(ICommandHandler<>), typeof(ICommandHandler<>).Assembly);
+
             // Decorators
-            container.RegisterDecorator(typeof(IUseCase<,>), typeof(UseCaseUnitOfWorkDecorator<,>));
-            container.RegisterDecorator(typeof(IUseCase<,>), typeof(UseCasePermissionDecorator<,>), context => typeof(IPermissionRequired).IsAssignableFrom(context.ImplementationType));
-
-
+            container.RegisterDecorator(typeof(ICommandHandler<>), typeof(RequirePermissionDecorator<>),
+                context => context.ImplementationType.GetCustomAttributes(typeof(RequirePermissionAttribute), false).Any());
 
             container.Verify();
         }

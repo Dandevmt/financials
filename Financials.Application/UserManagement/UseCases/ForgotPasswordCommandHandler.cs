@@ -7,17 +7,18 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using Financials.Application.CQRS;
 
 namespace Financials.Application.UserManagement.UseCases
 {
-    public class ForgotPassword : IUseCase<string, bool>
+    public class ForgotPasswordCommandHandler : ICommandHandler<ForgotPasswordCommand>
     {
         private readonly ICredentialRepository credRepo;
         private readonly IValidationCodeRepository codeRepo;
         private readonly ICodeGenerator codeGenerator;
         private readonly IEmailSender emailSender;
         private readonly AppSettings appSettings;
-        public ForgotPassword(
+        public ForgotPasswordCommandHandler(
             ICredentialRepository credRepo, 
             IValidationCodeRepository codeRepo, 
             ICodeGenerator codeGenerator,
@@ -31,13 +32,12 @@ namespace Financials.Application.UserManagement.UseCases
             this.codeRepo = codeRepo;
         }
 
-        public async Task Handle(string email, Action<bool> presenter)
+        public async Task<CommandResult> Handle(ForgotPasswordCommand email)
         {
-            var creds = credRepo.Get(email);
+            var creds = credRepo.Get(email.Email);
             if (creds == null)
             {
-                presenter(false);
-                return;
+                return CommandResult.Fail();
             }
 
             var code = new ValidationCode()
@@ -55,7 +55,7 @@ namespace Financials.Application.UserManagement.UseCases
                 Url = string.Format(appSettings.PasswordResetUrl, creds.UserId.ToString(), code.Code)
             };
             await emailSender.Send(em);
-            presenter(true);
+            return CommandResult.Success();
         }
     }
 }

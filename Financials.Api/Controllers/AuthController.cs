@@ -13,16 +13,16 @@ namespace Financials.Api.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
-        private readonly IUseCase<LoginInput, string> loginUseCase;
+        private readonly IUseCase<LoginCommand, string> loginUseCase;
 
-        public AuthController(IUseCase<LoginInput, string> loginUseCase)
+        public AuthController(IUseCase<LoginCommand, string> loginUseCase)
         {
             this.loginUseCase = loginUseCase;
         }
 
 
         [HttpPost]
-        public string CreateToken([FromBody] LoginInput login)
+        public string CreateToken([FromBody] LoginCommand login)
         {
             string jwtToken = null;
             loginUseCase.Handle(login, token => jwtToken = token);
