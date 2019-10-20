@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Financials.Application;
+using Financials.Application.CQRS;
 using Financials.Application.UserManagement.UseCases;
 using Financials.Entities;
 using Microsoft.AspNetCore.Http;
@@ -14,19 +15,17 @@ namespace Financials.Api.Controllers
     [ApiController]
     public class RegisterUserController : ControllerBase
     {
-        private readonly IUseCase<RegisterUserCommand, User> registerUserUseCase;
+        private readonly Dispatcher dispatcher;
 
-        public RegisterUserController(IUseCase<RegisterUserCommand, User> registerUserUseCase)
+        public RegisterUserController(Dispatcher dispatcher)
         {
-            this.registerUserUseCase = registerUserUseCase;
+            this.dispatcher = dispatcher;
         }
 
         [HttpPost]
-        public async Task<User> Register([FromBody] RegisterUserCommand input)
+        public async Task<CommandResult> Register([FromBody] RegisterUserCommand input)
         {
-            User user = null;
-            await registerUserUseCase.Handle(input, u => user = u);
-            return user;
+            return await dispatcher.Dispatch(input); ;
         }
     }
 }

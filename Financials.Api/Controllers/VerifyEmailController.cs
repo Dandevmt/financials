@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Financials.Application;
+using Financials.Application.CQRS;
 using Financials.Application.UserManagement.UseCases;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -13,22 +14,21 @@ namespace Financials.Api.Controllers
     [ApiController]
     public class VerifyEmailController : ControllerBase
     {
-        private readonly IUseCase<VerifyEmailCommand, bool> verifyEmailUseCase;
+        private readonly Dispatcher dispatcher;
 
-        public VerifyEmailController(IUseCase<VerifyEmailCommand, bool> verifyEmailUseCase)
+        public VerifyEmailController(Dispatcher dispatcher)
         {
-            this.verifyEmailUseCase = verifyEmailUseCase;
+            this.dispatcher = dispatcher;
         }
 
         [HttpGet]
-        public bool VerifyEmail(Guid userId, string code)
+        public async Task<CommandResult> VerifyEmail(Guid userId, string code)
         {
-            bool verified = false;
-            verifyEmailUseCase.Handle(new VerifyEmailCommand() { UserId = userId, Code = code }, ver => 
+            return await dispatcher.Dispatch(new VerifyEmailCommand() 
             {
-                verified = ver;            
+                UserId = userId,
+                Code = code
             });
-            return verified;
         }
     }
 }

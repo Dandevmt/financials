@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Financials.Application;
+using Financials.Application.CQRS;
 using Financials.Application.UserManagement.UseCases;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -13,19 +14,17 @@ namespace Financials.Api.Controllers
     [ApiController]
     public class ResetPasswordController : ControllerBase
     {
-        private readonly IUseCase<ResetPasswordCommand, bool> useCase;
+        private readonly Dispatcher dispatcher;
 
-        public ResetPasswordController(IUseCase<ResetPasswordCommand, bool> useCase)
+        public ResetPasswordController(Dispatcher dispatcher)
         {
-            this.useCase = useCase;
+            this.dispatcher = dispatcher;
         }
 
         [HttpPost]
-        public async Task<bool> Post([FromBody]ResetPasswordCommand input)
+        public async Task<CommandResult> Post([FromBody]ResetPasswordCommand input)
         {
-            bool success = false;
-            await useCase.Handle(input, s => { success = s; });
-            return success;
+            return await dispatcher.Dispatch(input);
         }
     }
 }

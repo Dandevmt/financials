@@ -1,4 +1,6 @@
 ﻿using Financials.Application;
+using Financials.Application.CQRS;
+using Financials.Application.UserManagement.UseCases;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -12,17 +14,17 @@ namespace Financials.Api.Controllers
     public class ForgotPasswordController : ControllerBase
     {
 
-        private readonly IUseCase<string, bool> resetUseCase;
+        private readonly Dispatcher dispatcher;
 
-        public ForgotPasswordController(IUseCase<string, bool> resetUseCase)
+        public ForgotPasswordController(Dispatcher dispatcher)
         {
-            this.resetUseCase = resetUseCase;
+            this.dispatcher = dispatcher;
         }
 
         [HttpPost]
         public async Task<IActionResult> Post(string email)
         {
-            await resetUseCase.Handle(email, emailSent => { });
+            await dispatcher.Dispatch(new ForgotPasswordCommand(email));
             return Ok();
         }
     }

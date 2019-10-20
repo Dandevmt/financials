@@ -7,6 +7,11 @@ namespace Financials.Application.UserManagement.UseCases
 {
     public class ForgotPasswordCommand : ICommand
     {
-        public string Email { get; set; }
+        public string Email { get; }
+
+        public ForgotPasswordCommand(string email)
+        {
+            Email = email;
+        }
     }
 }

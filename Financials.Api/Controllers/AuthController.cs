@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Financials.Application;
+using Financials.Application.CQRS;
 using Financials.Application.UserManagement.UseCases;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -13,20 +14,18 @@ namespace Financials.Api.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
-        private readonly IUseCase<LoginCommand, string> loginUseCase;
+        private readonly Dispatcher dispatcher;
 
-        public AuthController(IUseCase<LoginCommand, string> loginUseCase)
+        public AuthController(Dispatcher dispatcher)
         {
-            this.loginUseCase = loginUseCase;
+            this.dispatcher = dispatcher;
         }
 
 
         [HttpPost]
-        public string CreateToken([FromBody] LoginCommand login)
+        public async Task<CommandResult> CreateToken([FromBody] LoginCommand login)
         {
-            string jwtToken = null;
-            loginUseCase.Handle(login, token => jwtToken = token);
-            return jwtToken;
+            return await dispatcher.Dispatch(login); ;
         }
     }
 }

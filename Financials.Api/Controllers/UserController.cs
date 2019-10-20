@@ -38,10 +38,9 @@ namespace Financials.Api.Controllers
         }
 
         [HttpPost]
-        public IActionResult Post([FromBody] AddUserCommand input)
+        public async Task<CommandResult> Post([FromBody] AddUserCommand input)
         {
-            var result = dispatcher.Dispatch(input);
-            return Ok(result);
+            return await dispatcher.Dispatch(input);
         }
     }
 }
