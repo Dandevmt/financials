@@ -9,7 +9,7 @@ namespace Financials.Application.UserManagement.Security
         public Permission Permission { get; }
         public RequirePermissionAttribute(Permission permission)
         {
-            Permission = Permission;
+            Permission = permission;
         }
     }
 }
