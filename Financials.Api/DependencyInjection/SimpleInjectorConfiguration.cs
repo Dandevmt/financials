@@ -93,6 +93,8 @@ namespace Financials.Api.DependencyInjection
             container.RegisterDecorator(typeof(ICommandHandler<>), typeof(RequirePermissionDecorator<>), 
                 context => context.ImplementationType.GetCustomAttributes(typeof(RequirePermissionAttribute), false).Any());
 
+            container.RegisterSingleton<IProvider, ProviderWrapper>();
+            container.RegisterSingleton<Dispatcher>();
 
             // Decorators
             container.RegisterDecorator(typeof(IUseCase<,>), typeof(UseCaseUnitOfWorkDecorator<,>));

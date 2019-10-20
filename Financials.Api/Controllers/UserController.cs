@@ -24,11 +24,11 @@ namespace Financials.Api.Controllers
     [ApiController]
     public class UserController : ControllerBase 
     {
-        private readonly ICommandHandler<AddUserCommand> addUserCommand;
+        private readonly Dispatcher dispatcher;
 
-        public UserController(ICommandHandler<AddUserCommand> addUserCommand)
+        public UserController(Dispatcher dispatcher)
         {
-            this.addUserCommand = addUserCommand;
+            this.dispatcher = dispatcher;
         }
 
         [HttpGet]
@@ -40,7 +40,7 @@ namespace Financials.Api.Controllers
         [HttpPost]
         public IActionResult Post([FromBody] AddUserCommand input)
         {
-            var result = addUserCommand.Handle(input);
+            var result = dispatcher.Dispatch(input);
             return Ok(result);
         }
     }
