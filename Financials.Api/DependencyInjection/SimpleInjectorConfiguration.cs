@@ -96,6 +96,9 @@ namespace Financials.Api.DependencyInjection
             // Decorators
             container.RegisterDecorator(typeof(ICommandHandler<>), typeof(RequirePermissionDecorator<>),
                 context => context.ImplementationType.GetCustomAttributes(typeof(RequirePermissionAttribute), false).Any());
+            container.RegisterDecorator(typeof(ICommandHandler<>), typeof(UnitOfWorkDecorator<>),
+                context => context.ImplementationType.GetCustomAttributes(typeof(UnitOfWorkDecoratorAttribute), false).Any());
+
 
             container.Verify();
         }

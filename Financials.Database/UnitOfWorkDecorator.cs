@@ -1,4 +1,5 @@
 ﻿using Financials.Application;
+using Financials.Application.CQRS;
 using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
@@ -7,25 +8,25 @@ using System.Threading.Tasks;
 
 namespace Financials.Database
 {
-    public class UseCaseUnitOfWorkDecorator<TInput, TOutput> : IUseCase<TInput, TOutput>
+    public class UnitOfWorkDecorator<TCommand> : CommandDecorator<TCommand>, ICommandHandler<TCommand> where TCommand : ICommand
     {
         private readonly IClientSessionHandle session;
-        private readonly IUseCase<TInput, TOutput> useCase;
         
-        public UseCaseUnitOfWorkDecorator(IClientSessionHandle session, IUseCase<TInput, TOutput> useCase)
+        public UnitOfWorkDecorator(
+            ICommandHandler<TCommand> handler, 
+            IClientSessionHandle session) : base(handler)
         {
             this.session = session;
-            this.useCase = useCase;
         }
 
-        public async Task Handle(TInput input, Action<TOutput> presenter)
+        public Task<CommandResult> Handle(TCommand input)
         {
             using (session)
             {
                 // session.StartTransaction();
                 try
                 {
-                    await useCase.Handle(input, presenter);
+                    return commandHandler.Handle(input);
                     // session.CommitTransaction();
                 }
                 catch (Exception ex)
