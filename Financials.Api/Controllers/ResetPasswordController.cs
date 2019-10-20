@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Financials.Application;
 using Financials.Application.CQRS;
-using Financials.Application.UserManagement.UseCases;
+using Financials.Application.UserManagement.Commands;
 using Financials.Dto;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

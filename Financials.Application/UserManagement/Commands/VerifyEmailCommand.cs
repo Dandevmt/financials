@@ -1,7 +1,7 @@
 ﻿using Financials.Application.CQRS;
 using System;
 
-namespace Financials.Application.UserManagement.UseCases
+namespace Financials.Application.UserManagement.Commands
 {
     public class VerifyEmailCommand : ICommand
     {

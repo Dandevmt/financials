@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Financials.Application.UserManagement.UseCases
+namespace Financials.Application.UserManagement.Commands
 {
     [RequirePermission(Permission.AddUser)]
     public class AddUserCommandHandler : ICommandHandler<AddUserCommand>

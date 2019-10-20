@@ -2,7 +2,7 @@
 
 using Financials.Application.CQRS;
 
-namespace Financials.Application.UserManagement.UseCases
+namespace Financials.Application.UserManagement.Commands
 {
     public class RegisterUserCommand : AddUserCommand
     {

@@ -1,6 +1,6 @@
 ﻿using Financials.Application;
 using Financials.Application.CQRS;
-using Financials.Application.UserManagement.UseCases;
+using Financials.Application.UserManagement.Commands;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;

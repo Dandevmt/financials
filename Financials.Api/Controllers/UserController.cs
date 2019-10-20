@@ -7,7 +7,7 @@ using Financials.Application.UserManagement.Codes;
 using Financials.Application.Configuration;
 using Financials.Application.UserManagement.Security;
 using Financials.Application.UserManagement;
-using Financials.Application.UserManagement.UseCases;
+using Financials.Application.UserManagement.Commands;
 using Financials.Database;
 using Financials.Entities;
 using Financials.Infrastructure.Email;

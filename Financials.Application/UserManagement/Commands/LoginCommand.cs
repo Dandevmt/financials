@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Financials.Application.UserManagement.UseCases
+namespace Financials.Application.UserManagement.Commands
 {
     public class LoginCommand : ICommand
     {

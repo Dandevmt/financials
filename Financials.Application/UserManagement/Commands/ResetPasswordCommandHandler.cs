@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Financials.Application.UserManagement.UseCases
+namespace Financials.Application.UserManagement.Commands
 {
     public class ResetPasswordCommandHandler : ICommandHandler<ResetPasswordCommand>
     {
