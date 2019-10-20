@@ -42,7 +42,7 @@ namespace Financials.Application.UserManagement.UseCases
             var creds = AddCredentialsIfEmail(command.Email, user.Id);
             var validationCode = AddValidationCodeIfNoEmail(user.Id, command.Email);
 
-            return CommandResult<User>.Success(user).AsTask();
+            return CommandResult<string>.Success(user.Id.ToString()).AsTask();
         }
 
         private User AddUserFromInput(AddUserCommand input)

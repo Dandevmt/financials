@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
 using Financials.Application.CQRS;
+using Financials.Dto;
 
 namespace Financials.Api.Controllers
 {
@@ -37,9 +38,19 @@ namespace Financials.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<CommandResult> Post([FromBody] AddUserCommand input)
+        public async Task<CommandResult> Post([FromBody] AddUserDto input)
         {
-            return await dispatcher.Dispatch(input);
+            return await dispatcher.Dispatch(new AddUserCommand() 
+            {
+                City = input.City,
+                Country = input.Country,
+                Email = input.Email,
+                FirstName = input.FirstName,
+                LastName = input.LastName,
+                State = input.State,
+                Street = input.Street,
+                Zip = input.Zip
+            });
         }
     }
 }

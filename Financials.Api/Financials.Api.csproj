@@ -23,6 +23,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Financials.Application\Financials.Application.csproj" />
     <ProjectReference Include="..\Financials.Database\Financials.Database.csproj" />
+    <ProjectReference Include="..\Financials.Dto\Financials.Dto.csproj" />
     <ProjectReference Include="..\Financials.Infrastructure\Financials.Infrastructure.csproj" />
   </ItemGroup>
 

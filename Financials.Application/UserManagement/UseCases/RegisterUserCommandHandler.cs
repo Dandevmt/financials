@@ -90,7 +90,7 @@ namespace Financials.Application.UserManagement.UseCases
                 };
                 await emailSender.Send(email);
 
-                return CommandResult<User>.Success(user);
+                return CommandResult<string>.Success(user.Id.ToString());
             }                
         }
 

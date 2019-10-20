@@ -7,7 +7,13 @@ namespace Financials.Application.UserManagement.UseCases
 {
     public class LoginCommand : ICommand
     {
-        public string Email { get; set; }
-        public string Password { get; set; }
+        public string Email { get; }
+        public string Password { get; }
+
+        public LoginCommand(string email, string password)
+        {
+            Email = email;
+            Password = password;
+        }
     }
 }

@@ -5,7 +5,13 @@ namespace Financials.Application.UserManagement.UseCases
 {
     public class VerifyEmailCommand : ICommand
     {
-        public Guid UserId { get; set; }
-        public string Code { get; set; }
+        public Guid UserId { get; }
+        public string Code { get; }
+
+        public VerifyEmailCommand(Guid userId, string code)
+        {
+            UserId = userId;
+            Code = code;
+        }
     }
 }

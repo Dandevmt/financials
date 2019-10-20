@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Financials.Application;
 using Financials.Application.CQRS;
 using Financials.Application.UserManagement.UseCases;
+using Financials.Dto;
 using Financials.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -23,9 +24,22 @@ namespace Financials.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<CommandResult> Register([FromBody] RegisterUserCommand input)
+        public async Task<CommandResult> Register([FromBody] RegisterUserDto input)
         {
-            return await dispatcher.Dispatch(input); ;
+            return await dispatcher.Dispatch(new RegisterUserCommand() 
+            {
+                City = input.City,
+                Country = input.Country,
+                Email = input.Email,
+                FederationCode = input.FederationCode,
+                FirstName = input.FirstName,
+                LastName = input.LastName,
+                Password = input.Password,
+                Password2 = input.Password2,
+                State = input.State,
+                Street = input.Street,
+                Zip = input.Zip
+            }); ;
         }
     }
 }
