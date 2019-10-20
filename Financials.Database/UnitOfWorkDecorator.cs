@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Financials.Database
 {
-    public class UnitOfWorkDecorator<TCommand> : CommandDecorator<TCommand>, ICommandHandler<TCommand> where TCommand : ICommand
+    public class UnitOfWorkDecorator<TCommand> : CommandDecorator<TCommand> where TCommand : ICommand
     {
         private readonly IClientSessionHandle session;
         

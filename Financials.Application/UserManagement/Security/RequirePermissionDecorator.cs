@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Financials.Application.UserManagement.Security
 {
-    public class RequirePermissionDecorator<TCommand> : CommandDecorator<TCommand>, ICommandHandler<TCommand> where TCommand : ICommand
+    public class RequirePermissionDecorator<TCommand> : CommandDecorator<TCommand> where TCommand : ICommand
     {
         private readonly IAccess access;
 
