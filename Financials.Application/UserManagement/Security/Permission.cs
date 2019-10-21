@@ -7,6 +7,7 @@ namespace Financials.Application.UserManagement.Security
     public enum Permission
     {
         AddUser,
-        DeleteUser
+        DeleteUser,
+        AddTransaction
     }
 }

@@ -22,6 +22,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Financials.Application.CQRS;
+using Financials.Application.Transactions.Repositories;
 
 namespace Financials.Api.DependencyInjection
 {
@@ -76,6 +77,7 @@ namespace Financials.Api.DependencyInjection
             container.Register<IUserRepository, UserRepository>(Lifestyle.Scoped);
             container.Register<IValidationCodeRepository, ValidationCodeRepository>(Lifestyle.Scoped);
             container.Register<ICredentialRepository, CredentialRepository>(Lifestyle.Scoped);
+            container.Register<ITransactionRepository, TransactionRepository>(Lifestyle.Scoped);
             container.Register<IClientSessionHandle>(() =>
             {
                 return container.GetInstance<IMongoDatabase>().Client.StartSession();
@@ -98,7 +100,7 @@ namespace Financials.Api.DependencyInjection
                 context => context.ImplementationType.GetCustomAttributes(typeof(RequirePermissionAttribute), false).Any());
             container.RegisterDecorator(typeof(ICommandHandler<>), typeof(UnitOfWorkDecorator<>),
                 context => context.ImplementationType.GetCustomAttributes(typeof(UnitOfWorkDecoratorAttribute), false).Any());
-
+            
 
             container.Verify();
         }
