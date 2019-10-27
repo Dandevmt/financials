@@ -17,6 +17,8 @@ using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
 using Financials.Application.CQRS;
 using Financials.Dto;
+using Financials.Application.UserManagement.Queries;
+using System.Text.Json;
 
 namespace Financials.Api.Controllers
 {
@@ -37,6 +39,13 @@ namespace Financials.Api.Controllers
             return new User();
         }
 
+        [HttpGet]
+        [Route("all")]
+        public async Task<CommandResult<IEnumerable<UserDto>>> GetAll()
+        {
+            return await dispatcher.Dispatch<GetAllUsersQuery, IEnumerable<UserDto>>(new GetAllUsersQuery());
+        }
+
         [HttpPost]
         public async Task<CommandResult> Post([FromBody] AddUserDto input)
         {
@@ -49,7 +58,8 @@ namespace Financials.Api.Controllers
                 LastName = input.LastName,
                 State = input.State,
                 Street = input.Street,
-                Zip = input.Zip
+                Zip = input.Zip,
+                ValidateOnly = input.ValidateOnly
             });
         }
     }

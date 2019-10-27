@@ -21,7 +21,7 @@ namespace Financials.Api.Authentication
             this.appSettings = appSettings;
         }
 
-        public string Build(User user)
+        public string Build(User user, int durationMinutes)
         {
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(appSettings.TokenKey));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
@@ -34,7 +34,7 @@ namespace Financials.Api.Authentication
             var token = new JwtSecurityToken(appSettings.TokenIssuer,
               appSettings.TokenAudience,
               claims: claims,
-              expires: DateTime.Now.AddMinutes(30),
+              expires: DateTime.Now.AddMinutes(durationMinutes),
               signingCredentials: creds);
 
             return new JwtSecurityTokenHandler().WriteToken(token);

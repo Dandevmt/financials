@@ -20,12 +20,13 @@ namespace Financials.Application.CQRS
 
         public ValidationError AddError(string field, string error)
         {
-            if(FieldErrors.TryGetValue(field, out IList<string> list))
+            string fieldCamel = char.ToLowerInvariant(field[0]) + field.Substring(1);
+            if (FieldErrors.TryGetValue(fieldCamel, out IList<string> list))
             {
                 list.Add(error);
             } else
             {
-                FieldErrors.Add(field, new List<string> { error });
+                FieldErrors.Add(fieldCamel, new List<string> { error });
             }
             return this;
         }

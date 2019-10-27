@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Financials.Application.UserManagement.Commands
 {
-    [RequirePermission(Permission.AddUser)]
+    [RequirePermission(Permission.AddUsers)]
     public class AddUserCommandHandler : ICommandHandler<AddUserCommand>
     {
         private readonly IUserRepository userRepo;
@@ -37,6 +37,9 @@ namespace Financials.Application.UserManagement.Commands
         {
             if (!command.Validate(out ValidationError error))
                 return CommandResult.Fail(error).AsTask();
+
+            if (command.ValidateOnly)
+                return CommandResult.Success().AsTask();
 
             var user = AddUserFromInput(command);
             var creds = AddCredentialsIfEmail(command.Email, user.Id);

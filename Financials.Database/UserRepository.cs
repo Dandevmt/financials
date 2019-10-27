@@ -50,7 +50,7 @@ namespace Financials.Database
 
         public IEnumerable<User> GetAll()
         {
-            return collection.Find(session, null).ToEnumerable();
+            return collection.Find(session, f => true).ToEnumerable();
         }
 
         private FilterDefinition<User> FilterId(Guid id)

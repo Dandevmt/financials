@@ -19,6 +19,8 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using SimpleInjector;
+using Financials.Application.CQRS;
+using Financials.Api.JsonConverters;
 
 namespace Financials.Api
 {
@@ -32,6 +34,7 @@ namespace Financials.Api
         }
 
         public IConfiguration Configuration { get; }
+        private readonly string originPolicy = "originPolicy";
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -39,7 +42,22 @@ namespace Financials.Api
             var appSettings = Configuration.GetSection(nameof(AppSettings)).Get<AppSettings>();
             Authentication.JWTConfiguration.Configure(services, appSettings);
 
-            services.AddControllers();
+            services.AddCors(options =>
+            {
+                options.AddPolicy(originPolicy,
+                builder =>
+                {
+                    builder.WithOrigins("*");
+                    builder.WithMethods("*");
+                    builder.WithHeaders("content-type", "authorization");
+                });
+            });
+
+            services.AddControllers().AddJsonOptions(j => 
+            {
+                // Serialize properties of derived classes of CommandError
+                j.JsonSerializerOptions.Converters.Add(new PolymorphicWriteOnlyJsonConverter<CommandError>());
+            });
             services.AddLogging();
 
             DependencyInjection.SimpleInjectorConfiguration.Setup(services, container);  
@@ -56,6 +74,8 @@ namespace Financials.Api
             }
 
             app.ConfigureExceptionHandler(container.GetInstance<Application.Logging.ILogger>());
+
+            app.UseCors(originPolicy);
 
             app.UseHttpsRedirection();
 

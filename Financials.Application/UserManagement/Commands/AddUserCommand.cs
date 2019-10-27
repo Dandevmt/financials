@@ -15,6 +15,7 @@ namespace Financials.Application.UserManagement.Commands
         public string State { get; set; }
         public string Zip { get; set; }
         public string Country { get; set; }
+        public bool ValidateOnly { get; set; }
 
         public virtual bool Validate(out ValidationError errors)
         {

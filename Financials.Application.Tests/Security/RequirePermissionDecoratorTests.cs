@@ -30,7 +30,7 @@ namespace Financials.Application.Tests.Security
                 return CommandResult.Success().AsTask();
             }
         }
-        [RequirePermission(Permission.AddUser)]
+        [RequirePermission(Permission.AddUsers)]
         class TestHandlerWithPermission : ICommandHandler<TestCommand>
         {
             public Task<CommandResult> Handle(TestCommand command)
@@ -56,19 +56,19 @@ namespace Financials.Application.Tests.Security
         [TestMethod]
         public async Task CanDoCalled()
         {
-            access.Setup(x => x.CanDo(Permission.AddUser)).Returns(true);
+            access.Setup(x => x.CanDo(Permission.AddUsers)).Returns(true);
 
             var decorator = new RequirePermissionDecorator<TestCommand>(new TestHandlerWithPermission(), access.Object);
             var result = await decorator.Handle(new TestCommand());
 
-            access.Verify(x => x.CanDo(Permission.AddUser), Times.Once);
+            access.Verify(x => x.CanDo(Permission.AddUsers), Times.Once);
         }
 
 
         [TestMethod]
         public async Task PermissionDenied()
         {
-            access.Setup(x => x.CanDo(Permission.AddUser)).Returns(false);
+            access.Setup(x => x.CanDo(Permission.AddUsers)).Returns(false);
 
             var decorator = new RequirePermissionDecorator<TestCommand>(new TestHandlerWithPermission(), access.Object);
             var result = await decorator.Handle(new TestCommand());

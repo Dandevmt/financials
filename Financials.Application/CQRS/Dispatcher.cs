@@ -24,6 +24,16 @@ namespace Financials.Application.CQRS
             return await handler.Handle(command);
         }
 
+        public async Task<CommandResult<TResult>> Dispatch<TQuery, TResult>(TQuery query) where TQuery : IQuery<TResult>
+        {
+            Type handlerType = typeof(IQueryHandler<,>).MakeGenericType(typeof(TQuery), typeof(TResult));
+            var handler = provider.GetService(handlerType) as IQueryHandler<TQuery, TResult>;
+            if (handler == null)
+                throw new Exception($"Could not get service of type {handlerType}");
+
+            return await handler.Handle(query);
+        }
+
         
     }
 }

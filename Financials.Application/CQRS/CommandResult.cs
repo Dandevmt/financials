@@ -41,7 +41,7 @@ namespace Financials.Application.CQRS
             return this;
         }
 
-        public Task<CommandResult> AsTask()
+        public virtual Task<CommandResult> AsTask()
         {
             return Task.FromResult(this);
         }
@@ -51,15 +51,31 @@ namespace Financials.Application.CQRS
     {
         public TData Data { get; }
 
-        public CommandResult(TData data, bool isSuccess)
+        private CommandResult(TData data, bool isSuccess)
         {
             Data = data;
             IsSuccess = isSuccess;
         }
 
-        public static CommandResult Success(TData data)
+        private CommandResult(CommandError error)
+        {
+            IsSuccess = false;
+            Error = error;
+        }
+
+        public static CommandResult<TData> Success(TData data)
         {
             return new CommandResult<TData>(data, true);
+        }
+
+        public new static CommandResult<TData> Fail(CommandError error)
+        {
+            return new CommandResult<TData>(error);
+        }
+
+        public Task<CommandResult<TData>> AsTaskTyped()
+        {
+            return Task.FromResult(this);
         }
     }
 }

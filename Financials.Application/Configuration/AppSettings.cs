@@ -10,6 +10,8 @@ namespace Financials.Application.Configuration
         public string TokenKey { get; set; }
         public string TokenIssuer { get; set; }
         public string TokenAudience { get; set; }
+        public int TokenDurationMinutes { get; set; }
+        public string TokenDomain { get; set; }
         public string EmailVerificationUrl { get; set; }
         public string PasswordResetUrl { get; set; }
         public string EmailSenderUrl { get; set; }

@@ -2,6 +2,6 @@
 {
     public interface ITokenBuilder
     {
-        public string Build(Entities.User user);
+        public string Build(Entities.User user, int durationMinutes);
     }
 }
