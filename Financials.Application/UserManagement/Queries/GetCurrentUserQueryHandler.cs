@@ -10,52 +10,47 @@ using System.Threading.Tasks;
 
 namespace Financials.Application.UserManagement.Queries
 {
-    [RequirePermission(Permission.ViewUsers)]
-    public class GetUserQueryHandler : IQueryHandler<GetUserQuery, UserDto>
+    public class GetCurrentUserQueryHandler : IQueryHandler<GetCurrentUserQuery, UserDto>
     {
+        private readonly IAccess access;
         private readonly AppSettings appSettings;
         private readonly IValidationCodeRepository codeRepo;
         private readonly ICredentialRepository credRepo;
         private readonly IUserRepository userRepo;
 
-        public GetUserQueryHandler(
-            AppSettings appSettings,
-            IValidationCodeRepository codeRepo,
+        public GetCurrentUserQueryHandler(
+            IAccess access, 
+            AppSettings appSettings, 
+            IValidationCodeRepository codeRepo, 
             ICredentialRepository credRepo,
             IUserRepository userRepo)
         {
+            this.access = access;
             this.appSettings = appSettings;
             this.codeRepo = codeRepo;
             this.credRepo = credRepo;
             this.userRepo = userRepo;
         }
 
-        public Task<CommandResult<UserDto>> Handle(GetUserQuery query)
+        public Task<CommandResult<UserDto>> Handle(GetCurrentUserQuery query)
         {
-            if (string.IsNullOrEmpty(query.UserId))
-                return CommandResult<UserDto>.Fail(ValidationError.New().AddError(nameof(query.UserId), "User Id is required")).AsTaskTyped();
+            var user = access.CurrentUser();
+            if (user == null)
+                return CommandResult<UserDto>.Fail(UserManagementError.UserNotLoggedIn()).AsTaskTyped();
 
-            if (!Guid.TryParse(query.UserId, out Guid userId))
-                return CommandResult<UserDto>.Fail(ValidationError.New().AddError(nameof(query.UserId), "User Id is not in a correct format")).AsTaskTyped();
-
-            var userDto = new LoadUserDtoService(appSettings, codeRepo, credRepo, userRepo).LoadUser(userId);
+            var userDto = new LoadUserDtoService(appSettings, codeRepo, credRepo, userRepo).LoadUser(user.Id);
 
             if (userDto == null)
             {
                 return CommandResult<UserDto>.Fail(UserManagementError.UserNotFound()).AsTaskTyped();
             }
-
+            // TODO: Remove this line
+            userDto.Permissions = new HashSet<string>() { Permission.AddUsers.ToString(), Permission.ViewUsers.ToString(), Permission.EditUsers.ToString() };
             return CommandResult<UserDto>.Success(userDto).AsTaskTyped();
         }
     }
 
-    public class GetUserQuery : IQuery<UserDto>
+    public class GetCurrentUserQuery : IQuery<UserDto>
     {
-        public string UserId { get; set; }
-
-        public GetUserQuery(string userId)
-        {
-            UserId = userId;
-        }
     }
 }

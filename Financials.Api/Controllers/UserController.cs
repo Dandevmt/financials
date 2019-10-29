@@ -34,9 +34,9 @@ namespace Financials.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<User> Get(string id)
+        public async Task<CommandResult<UserDto>> Get(string id)
         {
-            return new User();
+            return await dispatcher.Dispatch<GetUserQuery, UserDto>(new GetUserQuery(id));
         }
 
         [HttpGet]

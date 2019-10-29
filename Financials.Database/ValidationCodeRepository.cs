@@ -32,6 +32,11 @@ namespace Financials.Database
             return collection.Find(FilterUserIdAndType(userId, type)).FirstOrDefault();
         }
 
+        public IList<ValidationCode> GetAll(ValidationCodeType type)
+        {
+            return collection.Find(f => f.Type == type).ToList();
+        }
+
         public ValidationCode GetFederationCode(string federationCode)
         {
             return collection.Find(FilterFederationCode(federationCode)).FirstOrDefault();

@@ -12,6 +12,7 @@ namespace Financials.Application.Configuration
         public string TokenAudience { get; set; }
         public int TokenDurationMinutes { get; set; }
         public string TokenDomain { get; set; }
+        public int FederationCodeDurationDays { get; set; }
         public string EmailVerificationUrl { get; set; }
         public string PasswordResetUrl { get; set; }
         public string EmailSenderUrl { get; set; }

@@ -49,7 +49,7 @@ namespace Financials.Application.UserManagement.Commands
                 return CommandResult.Fail(UserManagementError.EmailExists());
 
             var federationCode = GetValidationCode(input.FederationCode);
-            if (federationCode == null || federationCode.Code != input.FederationCode || (DateTime.Today - federationCode.CreatedDate).TotalDays > 15)
+            if (federationCode == null || federationCode.Code != input.FederationCode || (DateTime.Today - federationCode.CreatedDate).TotalDays > appSettings.FederationCodeDurationDays)
             {
                 return CommandResult.Fail(UserManagementError.InvalidFederationCode());
             }
@@ -57,6 +57,7 @@ namespace Financials.Application.UserManagement.Commands
             {
                 // Update User
                 var user = GetUser(federationCode.UserId);
+                user.Registered = true;
                 user.Profile.FirstName = input.FirstName;
                 user.Profile.LastName = input.LastName;
                 user.Profile.Address.City = input.City;

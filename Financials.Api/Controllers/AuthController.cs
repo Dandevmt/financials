@@ -33,7 +33,7 @@ namespace Financials.Api.Controllers
         [HttpGet]
         public async Task<CommandResult<UserDto>> GetLoggedInUser()
         {
-            var t = await dispatcher.Dispatch<GetUserQuery, UserDto>(new GetUserQuery());
+            var t = await dispatcher.Dispatch<GetCurrentUserQuery, UserDto>(new GetCurrentUserQuery());
             return t;
         }
     }

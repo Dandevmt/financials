@@ -9,6 +9,7 @@ namespace Financials.Application.UserManagement.Repositories
     {
         Credentials Get(Guid userId);
         Credentials Get(string email);
+        IList<Credentials> GetAll();
         Credentials Add(Credentials credentials);
         Credentials UpdateOne(Credentials credentials);
     }

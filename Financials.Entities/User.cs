@@ -12,6 +12,7 @@ namespace Financials.Entities
         public Guid Id { get; set; }
         public UserProfile Profile { get; set; }
         public DateTime Archived { get; set; }
+        public bool Registered { get; set; }
         public HashSet<string> Permissions { get; set; }
 
     }

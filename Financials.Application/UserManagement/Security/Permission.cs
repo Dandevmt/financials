@@ -9,6 +9,7 @@ namespace Financials.Application.UserManagement.Security
         AddUsers,
         DeleteUser,
         AddTransaction,
-        ViewUsers
+        ViewUsers,
+        EditUsers
     }
 }

@@ -34,6 +34,11 @@ namespace Financials.Database
             return collection.Find(session, FilterByEmail(email)).FirstOrDefault();
         }
 
+        public IList<Credentials> GetAll()
+        {
+            return collection.Find(session, f => true).ToList();
+        }
+
         public Credentials UpdateOne(Credentials credentials)
         {
             var result = collection.ReplaceOne(FilterByUserId(credentials.UserId), credentials);

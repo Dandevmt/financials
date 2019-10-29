@@ -9,6 +9,7 @@ namespace Financials.Application.UserManagement.Repositories
     {
         ValidationCode Get(Guid userId, ValidationCodeType type);
         ValidationCode GetFederationCode(string federationCode);
+        IList<ValidationCode> GetAll(ValidationCodeType type);
         ValidationCode Add(ValidationCode code);
         bool Delete(Guid userId, ValidationCodeType type);
     }
