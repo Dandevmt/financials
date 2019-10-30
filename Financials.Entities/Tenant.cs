@@ -8,8 +8,8 @@ namespace Financials.Entities
 {
     public class Tenant
     {
-        [BsonId]
-        public string TenantId { get; set; }
+        [BsonId, BsonRepresentation(BsonType.String)]
+        public ObjectId TenantId { get; set; }
         public string TenantName { get; set; }
     }
 }

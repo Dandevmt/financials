@@ -27,7 +27,7 @@ namespace Financials.Application.UserManagement.Queries
         {
             var results = tenantRepo.GetAll().Select(t => new TenantDto() 
             { 
-                Id = t.TenantId,
+                Id = t.TenantId.ToString(),
                 Name = t.TenantName
             }).ToList();
             return CommandResult<IList<TenantDto>>.Success(results).AsTaskTyped();

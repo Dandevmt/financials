@@ -31,7 +31,7 @@ namespace Financials.Application.UserManagement.Commands
             {
                 TenantName = command.Name
             });
-            return CommandResult<string>.Success(tenant.TenantId).AsTask();
+            return CommandResult<string>.Success(tenant.TenantId.ToString()).AsTask();
         }
     }
 }

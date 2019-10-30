@@ -36,7 +36,7 @@ namespace Financials.Application.UserManagement.Queries
             }
             var dto = new TenantDto()
             {
-                Id = tenant.TenantId,
+                Id = tenant.TenantId.ToString(),
                 Name = tenant.TenantName
             };
             return CommandResult<TenantDto>.Success(dto).AsTaskTyped();

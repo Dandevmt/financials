@@ -56,7 +56,7 @@ namespace Financials.Application.UserManagement.Commands
                     LastName = "Extreme",
                     Address  = new Address()
                 },
-                TenantIds = new List<string>() { tenant.TenantId },
+                TenantIds = new List<string>() { tenant.TenantId.ToString() },
                 Registered = true,
                 Permissions = new HashSet<string>() { Permission.AddUsers.ToString(), Permission.DeleteUser.ToString(), Permission.EditUsers.ToString(), Permission.ViewUsers.ToString() },
                 ValidationCodes = new List<ValidationCode>()
