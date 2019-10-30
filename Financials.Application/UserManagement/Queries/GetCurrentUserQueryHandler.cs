@@ -38,8 +38,7 @@ namespace Financials.Application.UserManagement.Queries
             {
                 return CommandResult<UserDto>.Fail(UserManagementError.UserNotFound()).AsTaskTyped();
             }
-            // TODO: Remove this line
-            userDto.Permissions = new HashSet<string>() { Permission.AddUsers.ToString(), Permission.ViewUsers.ToString(), Permission.EditUsers.ToString() };
+
             return CommandResult<UserDto>.Success(userDto).AsTaskTyped();
         }
     }

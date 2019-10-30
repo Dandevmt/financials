@@ -74,6 +74,7 @@ namespace Financials.Api.DependencyInjection
                 c => true);
 
             // Repositories
+            container.Register<ITenantRepository, TenantRepository>(Lifestyle.Scoped);
             container.Register<IUserRepository, UserRepository>(Lifestyle.Scoped);
             container.Register<ITransactionRepository, TransactionRepository>(Lifestyle.Scoped);
             container.Register<IClientSessionHandle>(() =>

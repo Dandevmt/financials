@@ -21,6 +21,9 @@ using MongoDB.Driver;
 using SimpleInjector;
 using Financials.Application.CQRS;
 using Financials.Api.JsonConverters;
+using Financials.Application.UserManagement.Commands;
+using Financials.Database;
+using SimpleInjector.Lifestyles;
 
 namespace Financials.Api
 {
@@ -64,7 +67,7 @@ namespace Financials.Api
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public async void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             DependencyInjection.SimpleInjectorConfiguration.ConfigureApp(app, Configuration, container);
 
@@ -89,6 +92,13 @@ namespace Financials.Api
             {
                 endpoints.MapControllers();
             });
+
+            // Seed database
+            using (AsyncScopedLifestyle.BeginScope(container))
+            {
+                var dispatcher = container.GetInstance<Dispatcher>();
+                await dispatcher.Dispatch(new SeedUserCommand("admin", "admin"));
+            }                
         }
     }
 }
