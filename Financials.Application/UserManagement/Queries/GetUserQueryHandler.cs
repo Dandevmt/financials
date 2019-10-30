@@ -14,19 +14,13 @@ namespace Financials.Application.UserManagement.Queries
     public class GetUserQueryHandler : IQueryHandler<GetUserQuery, UserDto>
     {
         private readonly AppSettings appSettings;
-        private readonly IValidationCodeRepository codeRepo;
-        private readonly ICredentialRepository credRepo;
         private readonly IUserRepository userRepo;
 
         public GetUserQueryHandler(
             AppSettings appSettings,
-            IValidationCodeRepository codeRepo,
-            ICredentialRepository credRepo,
             IUserRepository userRepo)
         {
             this.appSettings = appSettings;
-            this.codeRepo = codeRepo;
-            this.credRepo = credRepo;
             this.userRepo = userRepo;
         }
 
@@ -38,7 +32,7 @@ namespace Financials.Application.UserManagement.Queries
             if (!Guid.TryParse(query.UserId, out Guid userId))
                 return CommandResult<UserDto>.Fail(ValidationError.New().AddError(nameof(query.UserId), "User Id is not in a correct format")).AsTaskTyped();
 
-            var userDto = new LoadUserDtoService(appSettings, codeRepo, credRepo, userRepo).LoadUser(userId);
+            var userDto = new LoadUserDtoService(appSettings, userRepo).LoadUser(userId);
 
             if (userDto == null)
             {

@@ -10,7 +10,10 @@ namespace Financials.Entities
     {
         [BsonId, BsonRepresentation(BsonType.String)]
         public Guid Id { get; set; }
+        public ICollection<string> TenantIds { get; set; }
+        public Credentials Credentials { get; set; }
         public UserProfile Profile { get; set; }
+        public ICollection<ValidationCode> ValidationCodes { get; set; }
         public DateTime Archived { get; set; }
         public bool Registered { get; set; }
         public HashSet<string> Permissions { get; set; }

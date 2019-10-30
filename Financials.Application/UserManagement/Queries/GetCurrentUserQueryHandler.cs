@@ -14,21 +14,15 @@ namespace Financials.Application.UserManagement.Queries
     {
         private readonly IAccess access;
         private readonly AppSettings appSettings;
-        private readonly IValidationCodeRepository codeRepo;
-        private readonly ICredentialRepository credRepo;
         private readonly IUserRepository userRepo;
 
         public GetCurrentUserQueryHandler(
             IAccess access, 
             AppSettings appSettings, 
-            IValidationCodeRepository codeRepo, 
-            ICredentialRepository credRepo,
             IUserRepository userRepo)
         {
             this.access = access;
             this.appSettings = appSettings;
-            this.codeRepo = codeRepo;
-            this.credRepo = credRepo;
             this.userRepo = userRepo;
         }
 
@@ -38,7 +32,7 @@ namespace Financials.Application.UserManagement.Queries
             if (user == null)
                 return CommandResult<UserDto>.Fail(UserManagementError.UserNotLoggedIn()).AsTaskTyped();
 
-            var userDto = new LoadUserDtoService(appSettings, codeRepo, credRepo, userRepo).LoadUser(user.Id);
+            var userDto = new LoadUserDtoService(appSettings, userRepo).LoadUser(user.Id);
 
             if (userDto == null)
             {

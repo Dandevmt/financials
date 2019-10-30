@@ -15,25 +15,19 @@ namespace Financials.Application.UserManagement.Commands
     public class RegisterUserCommandHandler : ICommandHandler<RegisterUserCommand>
     {
         private readonly IUserRepository userRepo;
-        private readonly IValidationCodeRepository codeRepo;
         private readonly ICodeGenerator codeGenerator;
-        private readonly ICredentialRepository credRepo;
         private readonly IPasswordHasher hasher;
         private readonly IEmailSender emailSender;
         private readonly AppSettings appSettings;
         public RegisterUserCommandHandler(
             IUserRepository userRepo, 
-            IValidationCodeRepository codeRepo, 
             ICodeGenerator codeGenerator,
-            ICredentialRepository credRepo,
             IPasswordHasher hasher,
             IEmailSender emailSender,
             AppSettings appSettings)
         {
             this.userRepo = userRepo;
-            this.codeRepo = codeRepo;
             this.codeGenerator = codeGenerator;
-            this.credRepo = credRepo;
             this.hasher = hasher;
             this.emailSender = emailSender;
             this.appSettings = appSettings;
@@ -44,70 +38,55 @@ namespace Financials.Application.UserManagement.Commands
             if (!input.Validate(out ValidationError error))
                 return CommandResult.Fail(error);
 
-            var creds = GetCredentials(input.Email);
-            if (creds != null)
+            var user = userRepo.Get(input.Email);
+            if (user != null)
                 return CommandResult.Fail(UserManagementError.EmailExists());
 
-            var federationCode = GetValidationCode(input.FederationCode);
-            if (federationCode == null || federationCode.Code != input.FederationCode || (DateTime.Today - federationCode.CreatedDate).TotalDays > appSettings.FederationCodeDurationDays)
+            user = new User() 
             {
-                return CommandResult.Fail(UserManagementError.InvalidFederationCode());
-            }
-            else
-            {
-                // Update User
-                var user = GetUser(federationCode.UserId);
-                user.Registered = true;
-                user.Profile.FirstName = input.FirstName;
-                user.Profile.LastName = input.LastName;
-                user.Profile.Address.City = input.City;
-                user.Profile.Address.State = input.State;
-                user.Profile.Address.Country = input.Country;
-                user.Profile.Address.Street = input.Street;
-                user.Profile.Address.Zip = input.Zip;
-
-                credRepo.Add(new Credentials() 
+                Registered = true,                
+                Credentials = new Credentials() 
                 {
-                    UserId = federationCode.UserId,
                     Email = input.Email,
                     EmailVerified = null,
                     Password = hasher.HashPassword(input.Password)
-                });
-
-                var emailCode = codeRepo.Add(new ValidationCode() 
+                },
+                Profile = new UserProfile() 
                 {
-                    Code = codeGenerator.Generate(30),
-                    CreatedDate = DateTime.Now,
-                    Type = ValidationCodeType.Email,
-                    UserId = federationCode.UserId
-                });
+                    FirstName = input.FirstName,
+                    LastName = input.LastName,
+                    Address = new Address() 
+                    {
+                        City = input.City,
+                        State = input.State,
+                        Street = input.Street,
+                        Country = input.Country,
+                        Zip = input.Zip
+                    }
+                },
+                Permissions = new HashSet<string>(),
+                TenantIds = new List<string>(),
+                ValidationCodes = new List<ValidationCode>()
+            };
 
-                codeRepo.Delete(federationCode.UserId, ValidationCodeType.Federation);
+            var emailCode = new ValidationCode()
+            {
+                Code = codeGenerator.Generate(30),
+                CreatedDate = DateTime.Now,
+                Type = ValidationCodeType.Email
+            };
 
-                var email = new VerifyEmailEmail()
-                {
-                    To = input.Email,
-                    Url = string.Format(appSettings.EmailVerificationUrl, federationCode.UserId.ToString(), emailCode.Code)
-                };
-                await emailSender.Send(email);
+            user.ValidationCodes.Add(emailCode);
+            userRepo.Add(user);
 
-                return CommandResult<string>.Success(user.Id.ToString());
-            }                
-        }
+            var email = new VerifyEmailEmail()
+            {
+                To = input.Email,
+                Url = string.Format(appSettings.EmailVerificationUrl, user.Id.ToString(), emailCode.Code)
+            };
+            await emailSender.Send(email);
 
-        private ValidationCode GetValidationCode(string federationCode)
-        {
-            return codeRepo.GetFederationCode(federationCode);
-        }
-
-        private Credentials GetCredentials(string email)
-        {
-            return credRepo.Get(email);
-        }
-
-        private User GetUser(Guid id)
-        {
-            return userRepo.Get(id);
+            return CommandResult<string>.Success(user.Id.ToString());
         }
     }
 }

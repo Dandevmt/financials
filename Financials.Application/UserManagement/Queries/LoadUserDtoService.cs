@@ -3,6 +3,7 @@ using Financials.Application.UserManagement.Repositories;
 using Financials.Dto;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Financials.Application.UserManagement.Queries
@@ -10,19 +11,13 @@ namespace Financials.Application.UserManagement.Queries
     public class LoadUserDtoService
     {
         private readonly AppSettings appSettings;
-        private readonly IValidationCodeRepository codeRepo;
-        private readonly ICredentialRepository credRepo;
         private readonly IUserRepository userRepo;
 
         public LoadUserDtoService(
             AppSettings appSettings,
-            IValidationCodeRepository codeRepo,
-            ICredentialRepository credRepo,
             IUserRepository userRepo)
         {
             this.appSettings = appSettings;
-            this.codeRepo = codeRepo;
-            this.credRepo = credRepo;
             this.userRepo = userRepo;
         }
 
@@ -34,16 +29,15 @@ namespace Financials.Application.UserManagement.Queries
                 return null;
             }
 
-            var federationCode = codeRepo.Get(userId, Entities.ValidationCodeType.Federation);
-            var creds = credRepo.Get(userId);
+            var fedCode = user.ValidationCodes.FirstOrDefault(c => c.Type == Entities.ValidationCodeType.Federation);
 
             var userDto = new UserDto()
             {
                 Id = userId.ToString(),
                 FirstName = user.Profile.FirstName,
                 LastName = user.Profile.LastName,
-                Email = creds?.Email,
-                EmailVerified = creds?.EmailVerified,
+                Email = user.Credentials?.Email,
+                EmailVerified = user.Credentials?.EmailVerified,
                 Permissions = user.Permissions ?? new HashSet<string>() { "ViewUsers", "AddUsers" },
                 Registered = user.Registered,
                 Address = new AddresssDto()
@@ -54,8 +48,8 @@ namespace Financials.Application.UserManagement.Queries
                     Street = user.Profile.Address.Street,
                     Zip = user.Profile.Address.Zip
                 },
-                FederationCode = federationCode?.Code,
-                FederationCodeExpiration = federationCode == null ? (DateTime?)null : (federationCode.CreatedDate.AddDays(appSettings.FederationCodeDurationDays))
+                FederationCode = fedCode?.Code,
+                FederationCodeExpiration = fedCode == null ? (DateTime?)null : (fedCode.CreatedDate.AddDays(appSettings.FederationCodeDurationDays))
             };
             return userDto;
         }

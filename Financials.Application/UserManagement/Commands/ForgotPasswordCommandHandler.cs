@@ -8,51 +8,50 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using Financials.Application.CQRS;
+using System.Linq;
 
 namespace Financials.Application.UserManagement.Commands
 {
     public class ForgotPasswordCommandHandler : ICommandHandler<ForgotPasswordCommand>
     {
-        private readonly ICredentialRepository credRepo;
-        private readonly IValidationCodeRepository codeRepo;
+        private readonly IUserRepository userRepo;
         private readonly ICodeGenerator codeGenerator;
         private readonly IEmailSender emailSender;
         private readonly AppSettings appSettings;
         public ForgotPasswordCommandHandler(
-            ICredentialRepository credRepo, 
-            IValidationCodeRepository codeRepo, 
+            IUserRepository userRepo,
             ICodeGenerator codeGenerator,
             IEmailSender emailSender, 
             AppSettings appSettings)
         {
-            this.credRepo = credRepo;
+            this.userRepo = userRepo;
             this.codeGenerator = codeGenerator;
             this.emailSender = emailSender;
             this.appSettings = appSettings;
-            this.codeRepo = codeRepo;
         }
 
         public async Task<CommandResult> Handle(ForgotPasswordCommand email)
         {
-            var creds = credRepo.Get(email.Email);
-            if (creds == null)
+            var user = userRepo.Get(email.Email);
+            if (user == null)
             {
                 return CommandResult.Fail();
             }
+            user.ValidationCodes = user.ValidationCodes.Where(v => v.Type != ValidationCodeType.PasswordReset).ToList();
 
             var code = new ValidationCode()
             {
                 Code = codeGenerator.Generate(30),
                 CreatedDate = DateTime.Now,
                 Type = ValidationCodeType.PasswordReset,
-                UserId = creds.UserId
             };
-            codeRepo.Add(code);
+            user.ValidationCodes.Add(code);
+            userRepo.Update(user);
 
             var em = new PasswordResetEmail()
             {
-                To = creds.Email,
-                Url = string.Format(appSettings.PasswordResetUrl, creds.UserId.ToString(), code.Code)
+                To = user.Credentials.Email,
+                Url = string.Format(appSettings.PasswordResetUrl, user.Id.ToString(), code.Code)
             };
             await emailSender.Send(em);
             return CommandResult.Success();

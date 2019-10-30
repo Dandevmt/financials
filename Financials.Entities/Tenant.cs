@@ -6,10 +6,10 @@ using System.Text;
 
 namespace Financials.Entities
 {
-    public class Credentials
+    public class Tenant
     {
-        public string Email { get; set; }
-        public string Password { get; set; }
-        public DateTime? EmailVerified { get; set; }
+        [BsonId]
+        public string TenantId { get; set; }
+        public string TenantName { get; set; }
     }
 }

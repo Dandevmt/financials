@@ -14,23 +14,17 @@ namespace Financials.Application.UserManagement.Commands
     public class AddUserCommandHandler : ICommandHandler<AddUserCommand>
     {
         private readonly IUserRepository userRepo;
-        private readonly IValidationCodeRepository codeRepository;
         private readonly ICodeGenerator codeGenerator;
         private readonly IPasswordHasher hasher;
-        private readonly ICredentialRepository credRepo;
 
         public AddUserCommandHandler(
             IUserRepository repo,
-            IValidationCodeRepository codeRepository,
             ICodeGenerator codeGenerator,
-            IPasswordHasher hasher,
-            ICredentialRepository credRepo)
+            IPasswordHasher hasher)
         {
             this.userRepo = repo;
-            this.codeRepository = codeRepository;
             this.codeGenerator = codeGenerator;
             this.hasher = hasher;
-            this.credRepo = credRepo;
         }
 
         public Task<CommandResult> Handle(AddUserCommand command)
@@ -41,17 +35,20 @@ namespace Financials.Application.UserManagement.Commands
             if (command.ValidateOnly)
                 return CommandResult.Success().AsTask();
 
-            var user = AddUserFromInput(command);
-            var creds = AddCredentialsIfEmail(command.Email, user.Id);
-            var validationCode = AddValidationCodeIfNoEmail(user.Id, command.Email);
+            var user = GetUserFromInput(command);
+            user.Credentials = GetCredentialsIfEmail(command.Email);
+            var validationCode = GetValidationCodeIfNoEmail(command.Email);
+            user.ValidationCodes.Add(validationCode);
+            userRepo.Add(user);
 
             return CommandResult<string>.Success(user.Id.ToString()).AsTask();
         }
 
-        private User AddUserFromInput(AddUserCommand input)
+        private User GetUserFromInput(AddUserCommand input)
         {
             var user = new User()
             {
+                TenantIds = new List<string> { input.TenantId },
                 Profile = new UserProfile()
                 {
                     FirstName = input.FirstName,
@@ -64,22 +61,23 @@ namespace Financials.Application.UserManagement.Commands
                         Street = input.Street,
                         Country = input.Country
                     }
-                }
+                },
+                ValidationCodes = new List<ValidationCode>()
             };
-            return userRepo.Add(user);
+            userRepo.Add(user);
+            return user;
         }
 
-        private Credentials AddCredentialsIfEmail(string email, Guid userId)
+        private Credentials GetCredentialsIfEmail(string email)
         {
             if (!string.IsNullOrWhiteSpace(email))
             {
                 var creds = new Credentials()
                 {
-                    UserId = userId,
                     Email = email,
                     Password = hasher.HashPassword(codeGenerator.Generate(30))
                 };
-                return credRepo.Add(creds);
+                return creds;
             }
             else
             {
@@ -87,17 +85,16 @@ namespace Financials.Application.UserManagement.Commands
             }
         }
 
-        private ValidationCode AddValidationCodeIfNoEmail(Guid userId, string email)
+        private ValidationCode GetValidationCodeIfNoEmail(string email)
         {
             if (string.IsNullOrWhiteSpace(email))
             {
-                return codeRepository.Add(new ValidationCode()
+                return new ValidationCode()
                 {
-                    UserId = userId,
                     CreatedDate = DateTime.Now,
                     Code = codeGenerator.Generate(8).ToUpper(),
                     Type = ValidationCodeType.Federation
-                });
+                };
             }
             else
             {

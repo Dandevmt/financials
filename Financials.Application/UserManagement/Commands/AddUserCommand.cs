@@ -7,6 +7,7 @@ namespace Financials.Application.UserManagement.Commands
 {
     public class AddUserCommand : ICommand
     {
+        public string TenantId { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Email { get; set; }

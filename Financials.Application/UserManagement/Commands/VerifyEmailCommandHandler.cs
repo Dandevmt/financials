@@ -3,6 +3,7 @@ using Financials.Application.UserManagement.Repositories;
 using Financials.Entities;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -10,25 +11,27 @@ namespace Financials.Application.UserManagement.Commands
 {
     public class VerifyEmailCommandHandler : ICommandHandler<VerifyEmailCommand>
     {
-        private IValidationCodeRepository codeRepo;
-        private ICredentialRepository credRepo;
+        private IUserRepository userRepo;
 
-        public VerifyEmailCommandHandler(IValidationCodeRepository codeRepo, ICredentialRepository credRepo)
+        public VerifyEmailCommandHandler(IUserRepository userRepo)
         {
-            this.codeRepo = codeRepo;
-            this.credRepo = credRepo;
+            this.userRepo = userRepo;
         }
 
         public Task<CommandResult> Handle(VerifyEmailCommand input)
         {
-            var code = codeRepo.Get(input.UserId, ValidationCodeType.Email);
+            var user = userRepo.Get(input.UserId);
+            if (user == null)
+                return CommandResult.Fail(UserManagementError.UserNotFound("User not found")).AsTask();
+
+            var code = user.ValidationCodes.FirstOrDefault(c => c.Type == ValidationCodeType.Email);
             if (code == null || !code.Code.Equals(input.Code) || (DateTime.Today - code.CreatedDate).TotalMinutes > 15)
                 return CommandResult.Fail(UserManagementError.InvalidEmailVerificationCode()).AsTask();
 
-            var creds = credRepo.Get(input.UserId);
+            var creds = user.Credentials;
             creds.EmailVerified = DateTime.Now;
 
-            var res = credRepo.UpdateOne(creds);
+            var res = userRepo.Update(user);
             if (res == null)
             {
                 return CommandResult.Fail(UserManagementError.EmailCouldNotUpdateDatabase()).AsTask();

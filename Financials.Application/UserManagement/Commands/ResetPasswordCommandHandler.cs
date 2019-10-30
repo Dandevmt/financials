@@ -4,6 +4,7 @@ using Financials.Application.UserManagement.Repositories;
 using Financials.Application.UserManagement.Security;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -11,18 +12,15 @@ namespace Financials.Application.UserManagement.Commands
 {
     public class ResetPasswordCommandHandler : ICommandHandler<ResetPasswordCommand>
     {
-        private IValidationCodeRepository codeRepo;
-        private ICredentialRepository credRepo;
+        private IUserRepository userRepo;
         private IPasswordHasher hasher;
         private IEmailSender emailSender;
         public ResetPasswordCommandHandler(
-            IValidationCodeRepository codeRepo, 
-            ICredentialRepository credRepo,
+            IUserRepository userRepo,
             IPasswordHasher hasher,
             IEmailSender emailSender)
         {
-            this.codeRepo = codeRepo;
-            this.credRepo = credRepo;
+            this.userRepo = userRepo;
             this.hasher = hasher;
             this.emailSender = emailSender;
         }
@@ -32,8 +30,12 @@ namespace Financials.Application.UserManagement.Commands
             if (!input.Validate(out ValidationError error))
                 return CommandResult.Fail(error);
 
-            var code = codeRepo.Get(input.UserId, Entities.ValidationCodeType.PasswordReset);
-            var creds = credRepo.Get(input.UserId);
+            var user = userRepo.Get(input.UserId);
+            if (user == null)
+                return CommandResult.Fail(UserManagementError.UserNotFound("User not found"));
+
+            var code = user.ValidationCodes.FirstOrDefault(c => c.Type == Entities.ValidationCodeType.PasswordReset);
+            var creds = user.Credentials;
 
             bool codesMatch = code != null && code.Code.Equals(input.ResetCode);
             bool passMatch = creds != null && hasher.VerifyPassword(creds.Password, input.NewPassword);
@@ -51,7 +53,7 @@ namespace Financials.Application.UserManagement.Commands
 
             creds.Password = hasher.HashPassword(input.NewPassword);
 
-            credRepo.UpdateOne(creds);
+            userRepo.Update(user);
 
             await emailSender.Send(new PasswordWasResetEmail() 
             {

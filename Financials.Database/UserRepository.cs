@@ -57,5 +57,15 @@ namespace Financials.Database
         {
             return Builders<User>.Filter.Eq(u => u.Id, id);
         }
+
+        private FilterDefinition<User> FilterEmail(string email)
+        {
+            return Builders<User>.Filter.Eq(u => u.Credentials.Email, email);
+        }
+
+        public User Get(string email)
+        {
+            return collection.Find(session, FilterEmail(email)).FirstOrDefault();
+        }
     }
 }

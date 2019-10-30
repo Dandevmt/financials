@@ -20,5 +20,6 @@ namespace Financials.Application.UserManagement
         public static CommandError InvalidCodePasswordOrUserId() => new UserManagementError(106, 400, "Invalid Code, Password Or User Id");
         public static CommandError UserNotFound(string description = null) => new UserManagementError(107, 400, description ?? "User Not Found");
         public static CommandError UserNotLoggedIn() => new UserManagementError(108, 400, "User Not Logged In");
+        public static CommandError TenanNotFound() => new UserManagementError(109, 400, "Tenant Not Found");
     }
 }
