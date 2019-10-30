@@ -39,7 +39,7 @@ namespace Financials.Api.Controllers
                 State = input.State,
                 Street = input.Street,
                 Zip = input.Zip
-            }); ;
+            });
         }
     }
 }
