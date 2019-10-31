@@ -38,7 +38,7 @@ namespace Financials.Application.UserManagement.Queries
                 LastName = user.Profile.LastName,
                 Email = user.Credentials?.Email,
                 EmailVerified = user.Credentials?.EmailVerified,
-                Permissions = user.Permissions ?? new HashSet<string>() { "ViewUsers", "AddUsers" },
+                Permissions = user.Permissions,
                 Registered = user.Registered,
                 Address = new AddresssDto()
                 {

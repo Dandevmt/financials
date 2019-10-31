@@ -64,7 +64,7 @@ namespace Financials.Application.UserManagement.Commands
                 },
                 ValidationCodes = new List<ValidationCode>()
             };
-            userRepo.Add(user);
+
             return user;
         }
 
