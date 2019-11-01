@@ -64,8 +64,7 @@ namespace Financials.Application.UserManagement.Commands
                         Zip = input.Zip
                     }
                 },
-                Permissions = new HashSet<string>(),
-                TenantIds = new List<string>(),
+                Tenants = new List<UserTenant>(),
                 ValidationCodes = new List<ValidationCode>()
             };
 

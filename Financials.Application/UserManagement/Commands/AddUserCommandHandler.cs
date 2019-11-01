@@ -1,54 +1,87 @@
-﻿using Financials.Application.CQRS;
+﻿using Financials.Application.Configuration;
+using Financials.Application.CQRS;
+using Financials.Application.Email;
 using Financials.Application.UserManagement.Codes;
 using Financials.Application.UserManagement.Repositories;
 using Financials.Application.UserManagement.Security;
 using Financials.Entities;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Financials.Application.UserManagement.Commands
 {
-    [RequirePermission(Permission.AddUsers)]
     public class AddUserCommandHandler : ICommandHandler<AddUserCommand>
     {
         private readonly IUserRepository userRepo;
+        private readonly ITenantRepository tenantRepository;
         private readonly ICodeGenerator codeGenerator;
         private readonly IPasswordHasher hasher;
+        private readonly AppSettings appSettings;
+        private readonly IEmailSender emailSender;
 
         public AddUserCommandHandler(
             IUserRepository repo,
+            ITenantRepository tenantRepository,
             ICodeGenerator codeGenerator,
-            IPasswordHasher hasher)
+            IPasswordHasher hasher,
+            AppSettings appSettings,
+            IEmailSender emailSender)
         {
             this.userRepo = repo;
+            this.tenantRepository = tenantRepository;
             this.codeGenerator = codeGenerator;
             this.hasher = hasher;
+            this.appSettings = appSettings;
+            this.emailSender = emailSender;
         }
 
-        public Task<CommandResult> Handle(AddUserCommand command)
+        public async Task<CommandResult> Handle(AddUserCommand command)
         {
             if (!command.Validate(out ValidationError error))
-                return CommandResult.Fail(error).AsTask();
+                return CommandResult.Fail(error);
+
+            if (!string.IsNullOrWhiteSpace(command.Email) && userRepo.Get(command.Email) != null)
+                return CommandResult.Fail(ValidationError.New().AddError(nameof(command.Email), "Email Already Exists"));
+
+            if (tenantRepository.Get(command.TenantId) == null)
+                return CommandResult.Fail(UserManagementError.TenanNotFound());
 
             if (command.ValidateOnly)
-                return CommandResult.Success().AsTask();
+                return CommandResult.Success();            
 
             var user = GetUserFromInput(command);
             user.Credentials = GetCredentialsIfEmail(command.Email);
-            var validationCode = GetValidationCodeIfNoEmail(command.Email);
-            user.ValidationCodes.Add(validationCode);
+            user.ValidationCodes = SetupValidationCodes(command);
             userRepo.Add(user);
 
-            return CommandResult<string>.Success(user.Id.ToString()).AsTask();
+            if (!string.IsNullOrWhiteSpace(command.Email))
+            {
+                var email = new VerifyEmailEmail()
+                {
+                    To = command.Email,
+                    Url = string.Format(appSettings.EmailVerificationUrl, user.Id.ToString(), user.ValidationCodes.FirstOrDefault().Code)
+                };
+                await emailSender.Send(email);
+            }            
+
+            return CommandResult<string>.Success(user.Id.ToString());
         }
 
         private User GetUserFromInput(AddUserCommand input)
         {
             var user = new User()
             {
-                TenantIds = new List<string> { input.TenantId },
+                Tenants = new List<UserTenant> 
+                { 
+                    new UserTenant()
+                    {
+                        TenantId = input.TenantId,
+                        FederationCode = codeGenerator.Generate(10)
+                    }
+                },
                 Profile = new UserProfile()
                 {
                     FirstName = input.FirstName,
@@ -61,11 +94,25 @@ namespace Financials.Application.UserManagement.Commands
                         Street = input.Street,
                         Country = input.Country
                     }
-                },
-                ValidationCodes = new List<ValidationCode>()
+                }
             };
 
             return user;
+        }
+
+        private ICollection<ValidationCode> SetupValidationCodes(AddUserCommand command)
+        {
+            List<ValidationCode> codes = new List<ValidationCode>();
+            if (!string.IsNullOrWhiteSpace(command.Email))
+            {
+                codes.Add(new ValidationCode()
+                {
+                    CreatedDate = DateTime.Now,
+                    Code = codeGenerator.Generate(20),
+                    Type = ValidationCodeType.Email
+                });
+            }
+            return codes;
         }
 
         private Credentials GetCredentialsIfEmail(string email)
@@ -78,23 +125,6 @@ namespace Financials.Application.UserManagement.Commands
                     Password = hasher.HashPassword(codeGenerator.Generate(30))
                 };
                 return creds;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        private ValidationCode GetValidationCodeIfNoEmail(string email)
-        {
-            if (string.IsNullOrWhiteSpace(email))
-            {
-                return new ValidationCode()
-                {
-                    CreatedDate = DateTime.Now,
-                    Code = codeGenerator.Generate(8).ToUpper(),
-                    Type = ValidationCodeType.Federation
-                };
             }
             else
             {

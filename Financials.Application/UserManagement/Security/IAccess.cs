@@ -7,7 +7,7 @@ namespace Financials.Application.UserManagement.Security
 {
     public interface IAccess
     {
-        bool CanDo(Permission permission);
+        bool CanDo(string tenantId, Permission permission);
         User CurrentUser();
     }
 }

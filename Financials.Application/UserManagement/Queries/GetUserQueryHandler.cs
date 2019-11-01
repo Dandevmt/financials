@@ -10,8 +10,7 @@ using System.Threading.Tasks;
 
 namespace Financials.Application.UserManagement.Queries
 {
-    [RequirePermission(Permission.ViewUsers)]
-    public class GetUserQueryHandler : IQueryHandler<GetUserQuery, UserDto>
+    public class GetUserQueryHandler : IQueryHandler<GetUserQuery, UserForTenantDto>
     {
         private readonly AppSettings appSettings;
         private readonly IUserRepository userRepo;
@@ -24,32 +23,37 @@ namespace Financials.Application.UserManagement.Queries
             this.userRepo = userRepo;
         }
 
-        public Task<CommandResult<UserDto>> Handle(GetUserQuery query)
+        public Task<CommandResult<UserForTenantDto>> Handle(GetUserQuery query)
         {
             if (string.IsNullOrEmpty(query.UserId))
-                return CommandResult<UserDto>.Fail(ValidationError.New().AddError(nameof(query.UserId), "User Id is required")).AsTaskTyped();
+                return CommandResult<UserForTenantDto>.Fail(ValidationError.New().AddError(nameof(query.UserId), "User Id is required")).AsTaskTyped();
 
             if (!Guid.TryParse(query.UserId, out Guid userId))
-                return CommandResult<UserDto>.Fail(ValidationError.New().AddError(nameof(query.UserId), "User Id is not in a correct format")).AsTaskTyped();
+                return CommandResult<UserForTenantDto>.Fail(ValidationError.New().AddError(nameof(query.UserId), "User Id is not in a correct format")).AsTaskTyped();
 
-            var userDto = new LoadUserDtoService(appSettings, userRepo).LoadUser(userId);
+            var user = userRepo.Get(query.UserId);
+
+            var userDto = UserMap.ToUserForTenantDto(user, query.TenantId);
 
             if (userDto == null)
             {
-                return CommandResult<UserDto>.Fail(UserManagementError.UserNotFound()).AsTaskTyped();
+                return CommandResult<UserForTenantDto>.Fail(UserManagementError.UserNotFound()).AsTaskTyped();
             }
 
-            return CommandResult<UserDto>.Success(userDto).AsTaskTyped();
+            return CommandResult<UserForTenantDto>.Success(userDto).AsTaskTyped();
         }
     }
 
-    public class GetUserQuery : IQuery<UserDto>
+    public class GetUserQuery : IQuery<UserForTenantDto>, IRequirePermission
     {
+        public Permission Permission => Permission.ViewUsers;
         public string UserId { get; set; }
+        public string TenantId { get; set; }
 
-        public GetUserQuery(string userId)
+        public GetUserQuery(string userId, string tenantId)
         {
             UserId = userId;
+            TenantId = tenantId;
         }
     }
 }

@@ -40,14 +40,15 @@ namespace Financials.Api
             return user;
         }
 
-        public bool CanDo(Permission permission)
+        public bool CanDo(string tenantId, Permission permission)
         {
             user = CurrentUser();
+            var permissions = user?.Tenants?.FirstOrDefault(t => t.TenantId == tenantId)?.Permissions;
 
-            if (user == null || user.Permissions == null || user.Permissions.Count == 0)
+            if (permissions == null || permissions.Count == 0)
                 return false;
 
-            return user.Permissions.Contains(permission.ToString());
+            return permissions.Contains(permission.ToString());
         }
     }
 }

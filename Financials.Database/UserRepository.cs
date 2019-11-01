@@ -40,17 +40,17 @@ namespace Financials.Database
             return collection.Find(session, FilterId(id)).FirstOrDefault();
         }
 
-        public IEnumerable<User> Get(int pageSize, int pageNumber, string sortField)
+        public IEnumerable<User> Get(string tenantId, int pageSize, int pageNumber, string sortField)
         {
-            return collection.Find(session, null)
+            return collection.Find(session, FilterTenant(tenantId))
                 .Sort(Builders<User>.Sort.Ascending(sortField))
                 .Skip((pageNumber - 1) * pageSize)
                 .Limit(pageSize).ToEnumerable();
         }
 
-        public IEnumerable<User> GetAll()
+        public IEnumerable<User> GetAll(string tenantId)
         {
-            return collection.Find(session, f => true).ToEnumerable();
+            return collection.Find(session, FilterTenant(tenantId)).ToEnumerable();
         }
 
         private FilterDefinition<User> FilterId(Guid id)
@@ -61,6 +61,11 @@ namespace Financials.Database
         private FilterDefinition<User> FilterEmail(string email)
         {
             return Builders<User>.Filter.Eq(u => u.Credentials.Email, email);
+        }
+
+        private FilterDefinition<User> FilterTenant(string tenantId)
+        {
+            return Builders<User>.Filter.ElemMatch(u => u.Tenants, t => t.TenantId == tenantId);
         }
 
         public User Get(string email)

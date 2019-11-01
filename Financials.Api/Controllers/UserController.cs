@@ -34,16 +34,16 @@ namespace Financials.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<CommandResult<UserDto>> Get(string id)
+        public async Task<CommandResult<UserForTenantDto>> Get(string tenantId, string id)
         {
-            return await dispatcher.Dispatch<GetUserQuery, UserDto>(new GetUserQuery(id));
+            return await dispatcher.Dispatch<GetUserQuery, UserForTenantDto>(new GetUserQuery(id, tenantId));
         }
 
         [HttpGet]
         [Route("all")]
-        public async Task<CommandResult<IEnumerable<UserDto>>> GetAll()
+        public async Task<CommandResult<IEnumerable<UserForTenantDto>>> GetAll()
         {
-            return await dispatcher.Dispatch<GetAllUsersQuery, IEnumerable<UserDto>>(new GetAllUsersQuery());
+            return await dispatcher.Dispatch<GetAllUsersQuery, IEnumerable<UserForTenantDto>>(new GetAllUsersQuery());
         }
 
         [HttpPost]

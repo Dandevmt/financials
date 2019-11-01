@@ -18,18 +18,17 @@ namespace Financials.Application.UserManagement.Security
         }
         public override Task<CommandResult<TResult>> Handle(TQuery query)
         {
-            var originalHandler = GetDecoratedQuery();
-            var attr = originalHandler.GetType().GetCustomAttribute<RequirePermissionAttribute>();
-            if (attr == null)
-                throw new Exception($"Could not find attribute of type {typeof(RequirePermissionAttribute)}");
+            var perm = query as IRequirePermission;
+            if (perm == null)
+                throw new Exception($"Command must implement {typeof(IRequirePermission)}");
 
-            if (access.CanDo(attr.Permission))
+            if (access.CanDo(perm.TenantId, perm.Permission))
             {
                 return queryHandler.Handle(query);
             }
             else
             {
-                return CommandResult<TResult>.Fail(CommandError.Forbidden($"Permission denied for {attr.Permission}")).AsTaskTyped();
+                return CommandResult<TResult>.Fail(CommandError.Forbidden($"Permission denied for {perm.Permission}")).AsTaskTyped();
             }
         }
     }

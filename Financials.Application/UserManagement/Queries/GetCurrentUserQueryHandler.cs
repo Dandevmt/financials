@@ -5,45 +5,49 @@ using Financials.Application.UserManagement.Security;
 using Financials.Dto;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Financials.Application.UserManagement.Queries
 {
-    public class GetCurrentUserQueryHandler : IQueryHandler<GetCurrentUserQuery, UserDto>
+    public class GetCurrentUserQueryHandler : IQueryHandler<GetCurrentUserQuery, UserForUserDto>
     {
         private readonly IAccess access;
         private readonly AppSettings appSettings;
         private readonly IUserRepository userRepo;
+        private readonly ITenantRepository tenantRepo;
 
         public GetCurrentUserQueryHandler(
             IAccess access, 
             AppSettings appSettings, 
-            IUserRepository userRepo)
+            IUserRepository userRepo,
+            ITenantRepository tenantRepo)
         {
             this.access = access;
             this.appSettings = appSettings;
             this.userRepo = userRepo;
+            this.tenantRepo = tenantRepo;
         }
 
-        public Task<CommandResult<UserDto>> Handle(GetCurrentUserQuery query)
+        public Task<CommandResult<UserForUserDto>> Handle(GetCurrentUserQuery query)
         {
             var user = access.CurrentUser();
             if (user == null)
-                return CommandResult<UserDto>.Fail(UserManagementError.UserNotLoggedIn()).AsTaskTyped();
+                return CommandResult<UserForUserDto>.Fail(UserManagementError.UserNotLoggedIn()).AsTaskTyped();
 
-            var userDto = new LoadUserDtoService(appSettings, userRepo).LoadUser(user.Id);
+            var userDto = UserMap.ToUserForUserDto(user, tenantRepo.GetAll().ToDictionary(t => t.TenantId.ToString(), t => t.TenantName));
 
             if (userDto == null)
             {
-                return CommandResult<UserDto>.Fail(UserManagementError.UserNotFound()).AsTaskTyped();
+                return CommandResult<UserForUserDto>.Fail(UserManagementError.UserNotFound()).AsTaskTyped();
             }
 
-            return CommandResult<UserDto>.Success(userDto).AsTaskTyped();
+            return CommandResult<UserForUserDto>.Success(userDto).AsTaskTyped();
         }
     }
 
-    public class GetCurrentUserQuery : IQuery<UserDto>
+    public class GetCurrentUserQuery : IQuery<UserForUserDto>
     {
     }
 }

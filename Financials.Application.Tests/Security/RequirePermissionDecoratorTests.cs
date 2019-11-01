@@ -21,57 +21,55 @@ namespace Financials.Application.Tests.Security
             access = new Mock<IAccess>();            
         }
 
-        class TestCommand : ICommand { }
+        class TestCommandWithPermission : ICommand, IRequirePermission
+        {
+            public string TenantId => "1";
 
-        class TestHandlerWithoutPermission : ICommandHandler<TestCommand>
+            public Permission Permission => Permission.AddUsers;
+        }
+
+        class TestHandlerWithPermission : ICommandHandler<TestCommandWithPermission>
         {
-            public Task<CommandResult> Handle(TestCommand command)
+            public Task<CommandResult> Handle(TestCommandWithPermission command)
             {
                 return CommandResult.Success().AsTask();
             }
         }
-        [RequirePermission(Permission.AddUsers)]
-        class TestHandlerWithPermission : ICommandHandler<TestCommand>
-        {
-            public Task<CommandResult> Handle(TestCommand command)
-            {
-                return CommandResult.Success().AsTask();
-            }
-        }
+
 
         [TestMethod]
         public async Task CanDoNotCalled()
         {          
 
-            var decorator = new RequirePermissionDecorator<TestCommand>(new TestHandlerWithoutPermission(), access.Object);
+            var handler = new TestHandlerWithPermission();
 
             await Assert.ThrowsExceptionAsync<Exception>(async () =>
             {
-                await decorator.Handle(new TestCommand());
+                await handler.Handle(new TestCommandWithPermission());
             });
 
-            access.Verify(x => x.CanDo(It.IsAny<Permission>()), Times.Never);
+            access.Verify(x => x.CanDo(It.IsAny<string>(), It.IsAny<Permission>()), Times.Never);
         }
 
         [TestMethod]
         public async Task CanDoCalled()
         {
-            access.Setup(x => x.CanDo(Permission.AddUsers)).Returns(true);
+            access.Setup(x => x.CanDo("1", Permission.AddUsers)).Returns(true);
 
-            var decorator = new RequirePermissionDecorator<TestCommand>(new TestHandlerWithPermission(), access.Object);
-            var result = await decorator.Handle(new TestCommand());
+            var decorator = new RequirePermissionDecorator<TestCommandWithPermission>(new TestHandlerWithPermission(), access.Object);
+            var result = await decorator.Handle(new TestCommandWithPermission());
 
-            access.Verify(x => x.CanDo(Permission.AddUsers), Times.Once);
+            access.Verify(x => x.CanDo("1", Permission.AddUsers), Times.Once);
         }
 
 
         [TestMethod]
         public async Task PermissionDenied()
         {
-            access.Setup(x => x.CanDo(Permission.AddUsers)).Returns(false);
+            access.Setup(x => x.CanDo("1", Permission.AddUsers)).Returns(false);
 
-            var decorator = new RequirePermissionDecorator<TestCommand>(new TestHandlerWithPermission(), access.Object);
-            var result = await decorator.Handle(new TestCommand());
+            var decorator = new RequirePermissionDecorator<TestCommandWithPermission>(new TestHandlerWithPermission(), access.Object);
+            var result = await decorator.Handle(new TestCommandWithPermission());
 
             Assert.IsFalse(result.IsSuccess);
             Assert.AreEqual(CommandError.Forbidden().Code, result.Error.Code);

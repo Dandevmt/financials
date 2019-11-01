@@ -4,8 +4,9 @@ using System.Text;
 
 namespace Financials.Application.UserManagement.Security
 {
-    public interface IPermissionRequired
+    public interface IRequirePermission
     {
-        Permission PermissionRequired { get; }
+        string TenantId { get; }
+        Permission Permission { get; }
     }
 }

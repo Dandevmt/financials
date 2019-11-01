@@ -12,61 +12,25 @@ using System.Threading.Tasks;
 
 namespace Financials.Application.UserManagement.Queries
 {
-    public class GetAllUsersQuery : IQuery<IEnumerable<UserDto>>
+    public class GetAllUsersQuery : IQuery<IEnumerable<UserForTenantDto>>, IRequirePermission
     {
+        public Permission Permission => Permission.ViewUsers;
+        public string TenantId { get; set; }
     }
 
-    [RequirePermission(Permission.ViewUsers)]
-    public class GetAllUsersQueryHandler : IQueryHandler<GetAllUsersQuery, IEnumerable<UserDto>>
+
+    public class GetAllUsersQueryHandler : IQueryHandler<GetAllUsersQuery, IEnumerable<UserForTenantDto>>
     {
         private readonly IUserRepository userRepo;
-        private readonly AppSettings appSettings;
-        public GetAllUsersQueryHandler(IUserRepository userRepo, AppSettings appSettings)
+
+        public GetAllUsersQueryHandler(IUserRepository userRepo)
         {
             this.userRepo = userRepo;
-            this.appSettings = appSettings;
         }
-        public Task<CommandResult<IEnumerable<UserDto>>> Handle(GetAllUsersQuery query)
+        public Task<CommandResult<IEnumerable<UserForTenantDto>>> Handle(GetAllUsersQuery query)
         {
-            var users = userRepo.GetAll().Select(u => new UserDto() 
-            {
-                Id = u.Id.ToString(),
-                FirstName = u.Profile.FirstName,
-                LastName = u.Profile.LastName,
-                Email = u.Credentials?.Email,
-                EmailVerified = u.Credentials?.EmailVerified,    
-                Registered = u.Registered,
-                FederationCode = GetFedCode(u.ValidationCodes.ToList()),
-                FederationCodeExpiration = GetFedCodeExpiration(u.ValidationCodes.ToList()),
-                Permissions = u.Permissions,
-                Address = new AddresssDto() 
-                {
-                    City = u.Profile.Address.City,
-                    State = u.Profile.Address.State,
-                    Street = u.Profile.Address.Street,
-                    Country = u.Profile.Address.Country,
-                    Zip = u.Profile.Address.Zip
-                }
-            });
-            return CommandResult<IEnumerable<UserDto>>.Success(users).AsTaskTyped();
-        }
-
-        private string GetFedCode(IList<ValidationCode> codes)
-        {
-            if (codes == null)
-                return null;
-
-            var code = codes.FirstOrDefault(c => c.Type == ValidationCodeType.Federation);
-            return code?.Code;
-        }
-        
-        private DateTime? GetFedCodeExpiration(IList<ValidationCode> codes)
-        {
-            if (codes == null)
-                return null;
-
-            var code = codes.FirstOrDefault(c => c.Type == ValidationCodeType.Federation);
-            return code?.CreatedDate.AddDays(appSettings.FederationCodeDurationDays);
+            var users = userRepo.GetAll(query.TenantId).Select(u => UserMap.ToUserForTenantDto(u, query.TenantId));
+            return CommandResult<IEnumerable<UserForTenantDto>>.Success(users).AsTaskTyped();
         }
     }
 }

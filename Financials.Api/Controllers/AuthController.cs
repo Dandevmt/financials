@@ -31,9 +31,9 @@ namespace Financials.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<CommandResult<UserDto>> GetLoggedInUser()
+        public async Task<CommandResult<UserForUserDto>> GetLoggedInUser()
         {
-            var t = await dispatcher.Dispatch<GetCurrentUserQuery, UserDto>(new GetCurrentUserQuery());
+            var t = await dispatcher.Dispatch<GetCurrentUserQuery, UserForUserDto>(new GetCurrentUserQuery());
             return t;
         }
     }

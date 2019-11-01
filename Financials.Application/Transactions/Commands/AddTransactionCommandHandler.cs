@@ -10,7 +10,6 @@ using System.Threading.Tasks;
 
 namespace Financials.Application.Transactions.Commands
 {
-    [RequirePermission(Permission.AddTransaction)]
     public class AddTransactionCommandHandler : ICommandHandler<AddTransactionCommand>
     {
         private readonly ITransactionRepository trRepo;

@@ -9,8 +9,8 @@ namespace Financials.Application.UserManagement.Repositories
     {
         User Get(Guid id);
         User Get(string email);
-        IEnumerable<User> Get(int pageSize, int pageNumber, string sortField);
-        IEnumerable<User> GetAll();
+        IEnumerable<User> Get(string tenantId, int pageSize, int pageNumber, string sortField);
+        IEnumerable<User> GetAll(string tenantId);
         User Add(User user);
         User Update(User user);
         User Delete(Guid id);

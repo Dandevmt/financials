@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Financials.Application.UserManagement.Security
 {
-    public class RequirePermissionDecorator<TCommand> : CommandDecorator<TCommand> where TCommand : ICommand
+    public class RequirePermissionDecorator<TCommand> : CommandDecorator<TCommand> where TCommand : ICommand, IRequirePermission
     {
         private readonly IAccess access;
 
@@ -19,18 +19,17 @@ namespace Financials.Application.UserManagement.Security
         }
         public override Task<CommandResult> Handle(TCommand command)
         {
-            var originalHandler = GetDecoratedCommand();
-            var attr = originalHandler.GetType().GetCustomAttribute<RequirePermissionAttribute>();
-            if (attr == null)
-                throw new Exception($"Could not find attribute of type {typeof(RequirePermissionAttribute)}");
+            var perm = command as IRequirePermission;
+            if (perm == null)
+                throw new Exception($"Command must implement {typeof(IRequirePermission)}");
             
-            if (access.CanDo(attr.Permission))
+            if (access.CanDo(perm.TenantId, perm.Permission))
             {
                 return commandHandler.Handle(command);
             }
             else
             {
-                return CommandResult.Fail(CommandError.Forbidden($"Permission denied for {attr.Permission}")).AsTask();
+                return CommandResult.Fail(CommandError.Forbidden($"Permission denied for {perm.Permission}")).AsTask();
             }
         }
     }

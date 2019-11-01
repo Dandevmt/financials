@@ -1,12 +1,15 @@
 ﻿using Financials.Application.CQRS;
+using Financials.Application.UserManagement.Security;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Financials.Application.UserManagement.Commands
 {
-    public class AddUserCommand : ICommand
+    public class AddUserCommand : ICommand, IRequirePermission
     {
+        public Permission Permission => Permission.AddUsers;
         public string TenantId { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
@@ -26,6 +29,9 @@ namespace Financials.Application.UserManagement.Commands
 
             if (string.IsNullOrWhiteSpace(LastName))
                 error.AddError(nameof(LastName), $"Last Name is required");
+
+            if (!string.IsNullOrWhiteSpace(Email) && Email.Count(e => e == '@') != 1)
+                error.AddError(nameof(Email), "Invalid Email Format");
 
             if (error.HasError)
             {
