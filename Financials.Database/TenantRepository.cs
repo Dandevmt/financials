@@ -1,5 +1,6 @@
 ﻿using Financials.Application.UserManagement.Repositories;
 using Financials.Entities;
+using MongoDB.Bson;
 using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
@@ -26,7 +27,8 @@ namespace Financials.Database
 
         public Tenant Get(string id)
         {
-            return collection.Find(session, t => t.TenantId.ToString() == id).FirstOrDefault();
+            ObjectId oid = ObjectId.Parse(id);
+            return collection.Find(session, t => t.TenantId == oid).FirstOrDefault();
         }
 
         public IList<Tenant> GetAll()

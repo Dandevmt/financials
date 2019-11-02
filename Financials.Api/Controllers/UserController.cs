@@ -67,7 +67,8 @@ namespace Financials.Api.Controllers
                 State = input.State,
                 Street = input.Street,
                 Zip = input.Zip,
-                ValidateOnly = input.ValidateOnly
+                ValidateOnly = input.ValidateOnly,
+                TenantId = input.TenantId
             });
         }
     }

@@ -13,5 +13,6 @@ namespace Financials.Dto
         public string Zip { get; set; }
         public string Country { get; set; }
         public bool ValidateOnly { get; set; }
+        public string TenantId { get; set; }
     }
 }
