@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Financials.Application.CQRS
 {
-    public class CommandError
+    public class CommandError: IError
     {
         public int Code { get; }
         public int HttpStatusCode { get; }

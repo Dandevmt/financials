@@ -16,6 +16,11 @@ namespace Financials.Application.UserManagement.Queries
     {
         public Permission Permission => Permission.ViewUsers;
         public string TenantId { get; set; }
+
+        public GetAllUsersQuery(string tenantId)
+        {
+            TenantId = tenantId;
+        }
     }
 
 

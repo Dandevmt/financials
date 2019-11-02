@@ -31,7 +31,7 @@ namespace Financials.Application.UserManagement.Queries
             if (!Guid.TryParse(query.UserId, out Guid userId))
                 return CommandResult<UserForTenantDto>.Fail(ValidationError.New().AddError(nameof(query.UserId), "User Id is not in a correct format")).AsTaskTyped();
 
-            var user = userRepo.Get(query.UserId);
+            var user = userRepo.Get(userId);
 
             var userDto = UserMap.ToUserForTenantDto(user, query.TenantId);
 

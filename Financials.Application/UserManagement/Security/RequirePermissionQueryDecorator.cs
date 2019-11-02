@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Financials.Application.UserManagement.Security
 {
-    public class RequirePermissionQueryDecorator<TQuery, TResult> : QueryDecorator<TQuery, TResult> where TQuery : IQuery<TResult>
+    public class RequirePermissionQueryDecorator<TQuery, TResult> : QueryDecorator<TQuery, TResult> where TQuery : IQuery<TResult>, IRequirePermission
     {
         private readonly IAccess access;
 

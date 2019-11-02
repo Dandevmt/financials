@@ -59,7 +59,7 @@ namespace Financials.Api
             services.AddControllers().AddJsonOptions(j => 
             {
                 // Serialize properties of derived classes of CommandError
-                j.JsonSerializerOptions.Converters.Add(new PolymorphicWriteOnlyJsonConverter<CommandError>());
+                j.JsonSerializerOptions.Converters.Add(new PolymorphicWriteOnlyJsonConverter<IError>());
             });
             services.AddLogging();
 
