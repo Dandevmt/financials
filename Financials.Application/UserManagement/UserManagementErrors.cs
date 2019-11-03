@@ -21,5 +21,6 @@ namespace Financials.Application.UserManagement
         public static CommandError UserNotFound(string description = null) => new UserManagementError(107, 400, description ?? "User Not Found");
         public static CommandError UserNotLoggedIn() => new UserManagementError(108, 400, "User Not Logged In");
         public static CommandError TenanNotFound() => new UserManagementError(109, 400, "Tenant Not Found");
+        public static CommandError TenantCodeAlreadyExists() => new UserManagementError(110, 400, "Tenant Code Already Exists");
     }
 }

@@ -27,8 +27,7 @@ namespace Financials.Database
 
         public Tenant Get(string id)
         {
-            ObjectId oid = ObjectId.Parse(id);
-            return collection.Find(session, t => t.TenantId == oid).FirstOrDefault();
+            return collection.Find(session, t => t.TenantId == id).FirstOrDefault();
         }
 
         public IList<Tenant> GetAll()

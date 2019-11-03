@@ -9,9 +9,11 @@ namespace Financials.Application.UserManagement.Commands
 {
     public class AddTenantCommand : ICommand
     {
+        public string Id { get; }
         public string Name { get; }
-        public AddTenantCommand(string name)
+        public AddTenantCommand(string id, string name)
         {
+            Id = id;
             Name = name;
         }
     }
@@ -27,8 +29,13 @@ namespace Financials.Application.UserManagement.Commands
 
         public Task<CommandResult> Handle(AddTenantCommand command)
         {
+            var existinTenant = tenantRepo.Get(command.Id);
+            if (existinTenant != null)
+                return CommandResult.Fail(UserManagementError.TenantCodeAlreadyExists()).AsTask();
+
             var tenant = tenantRepo.Add(new Entities.Tenant()
             {
+                TenantId = command.Id,
                 TenantName = command.Name
             });
             return CommandResult<string>.Success(tenant.TenantId.ToString()).AsTask();

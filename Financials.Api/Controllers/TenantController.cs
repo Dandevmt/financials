@@ -25,7 +25,7 @@ namespace Financials.Api.Controllers
         [HttpPost]
         public async Task<CommandResult> Add([FromBody] AddTenantDto input)
         {
-            return await dispatcher.Dispatch(new AddTenantCommand(input.Name));
+            return await dispatcher.Dispatch(new AddTenantCommand(input.Id, input.Name));
         }
 
         [HttpGet]
