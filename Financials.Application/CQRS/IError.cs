@@ -6,5 +6,7 @@ namespace Financials.Application.CQRS
 {
     public interface IError
     {
+        int Code { get; }
+        IError AddError(IError error);
     }
 }

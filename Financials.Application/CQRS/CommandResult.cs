@@ -8,7 +8,7 @@ namespace Financials.Application.CQRS
     public class CommandResult
     {
         public bool IsSuccess { get; protected set; }
-        public CommandError Error { get; protected set; }
+        public IError Error { get; protected set; }
 
         public static CommandResult Success()
         {

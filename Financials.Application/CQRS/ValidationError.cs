@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Financials.Application.CQRS
 {
-    public class ValidationError : CommandError
+    public class ValidationError : CommandError, IError
     {
         public IDictionary<string, IList<string>> FieldErrors { get; }
         public bool HasError 

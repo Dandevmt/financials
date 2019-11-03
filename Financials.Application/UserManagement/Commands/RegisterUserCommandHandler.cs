@@ -38,11 +38,13 @@ namespace Financials.Application.UserManagement.Commands
             if (!input.Validate(out ValidationError error))
                 return CommandResult.Fail(error);
 
-            var user = userRepo.Get(input.Email);
-            if (user != null)
-                return CommandResult.Fail(UserManagementError.EmailExists());
+            if (!string.IsNullOrWhiteSpace(input.Email) && userRepo.Get(input.Email) != null)
+                return CommandResult.Fail(ValidationError.New().AddError(nameof(input.Email), "Email Already Exists"));
 
-            user = new User() 
+            if (input.ValidateOnly)
+                return CommandResult.Success();
+
+            var user = new User() 
             {
                 Registered = true,                
                 Credentials = new Credentials() 

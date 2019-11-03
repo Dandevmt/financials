@@ -31,14 +31,15 @@ namespace Financials.Api.Controllers
                 City = input.City,
                 Country = input.Country,
                 Email = input.Email,
-                FederationCode = input.FederationCode,
+                Phone = input.Phone,
                 FirstName = input.FirstName,
                 LastName = input.LastName,
                 Password = input.Password,
                 Password2 = input.Password2,
                 State = input.State,
                 Street = input.Street,
-                Zip = input.Zip
+                Zip = input.Zip,
+                ValidateOnly = input.ValidateOnly
             });
         }
     }

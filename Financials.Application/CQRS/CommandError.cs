@@ -4,23 +4,23 @@ using System.Text;
 
 namespace Financials.Application.CQRS
 {
-    public class CommandError: IError
+    public class CommandError : IError
     {
         public int Code { get; }
         public int HttpStatusCode { get; }
         public string Description { get; }
-        private IList<CommandError> childErrors;
-        public IReadOnlyList<CommandError> ChildErrors { get { return (IReadOnlyList<CommandError>)childErrors; } }
+        private IList<IError> childErrors;
+        public IReadOnlyList<IError> ChildErrors { get { return (IReadOnlyList<IError>)childErrors; } }
 
         protected CommandError(int code, int httpStatusCode, string description)
         {
             Code = code;
             HttpStatusCode = httpStatusCode;
             Description = description;
-            childErrors = new List<CommandError>();
+            childErrors = new List<IError>();
         }
 
-        public CommandError AddError(CommandError error)
+        public IError AddError(IError error)
         {
             childErrors.Add(error);
             return this;
