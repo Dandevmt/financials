@@ -92,7 +92,7 @@ namespace Financials.Api.DependencyInjection
             container.RegisterSingleton<Dispatcher>();
 
             // Commands
-            container.Register(typeof(ICommandHandler<>), typeof(ICommandHandler<>).Assembly);
+            container.Register(typeof(ICommandHandler<>), AppDomain.CurrentDomain.GetAssemblies());
 
             // Queries
             container.Register(typeof(IQueryHandler<,>), typeof(IQueryHandler<,>).Assembly);
