@@ -55,7 +55,7 @@ namespace Financials.Application.UserManagement.Commands
             user.Tenants.Add(new Entities.UserTenant() 
             {
                 TenantId = command.TenantId,
-                Permissions = new HashSet<string>()                
+                Permissions = new Dictionary<string, HashSet<string>>()               
             });
 
             userRepo.Update(user);

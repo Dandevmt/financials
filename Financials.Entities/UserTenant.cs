@@ -9,6 +9,6 @@ namespace Financials.Entities
         public string TenantId { get; set; }
         public string FederationCode { get; set; }
         public DateTime? Federated { get; set; }
-        public HashSet<string> Permissions { get; set; }
+        public Dictionary<string, HashSet<string>> Permissions { get; set; }
     }
 }

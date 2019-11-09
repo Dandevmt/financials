@@ -7,12 +7,14 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Text;
 using System.Threading.Tasks;
+using Financials.Application.Configuration;
 
 namespace Financials.Application.Tests.Security
 {
     [TestClass]
     public class RequirePermissionDecoratorTests
     {
+        AppSettings appSettings = new AppSettings() { ApplicationName = "App" };
         Mock<IAccess> access;
 
         [TestInitialize]
@@ -48,27 +50,27 @@ namespace Financials.Application.Tests.Security
                 await handler.Handle(new TestCommandWithPermission());
             });
 
-            access.Verify(x => x.CanDo(It.IsAny<string>(), It.IsAny<Permission>()), Times.Never);
+            access.Verify(x => x.CanDo(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()), Times.Never);
         }
 
         [TestMethod]
         public async Task CanDoCalled()
         {
-            access.Setup(x => x.CanDo("1", Permission.AddUsers)).Returns(true);
+            access.Setup(x => x.CanDo("1", appSettings.ApplicationName, Permission.AddUsers.ToString())).Returns(true);
 
-            var decorator = new RequirePermissionDecorator<TestCommandWithPermission>(new TestHandlerWithPermission(), access.Object);
+            var decorator = new RequirePermissionDecorator<TestCommandWithPermission>(new TestHandlerWithPermission(), access.Object, appSettings);
             var result = await decorator.Handle(new TestCommandWithPermission());
 
-            access.Verify(x => x.CanDo("1", Permission.AddUsers), Times.Once);
+            access.Verify(x => x.CanDo("1", "app", Permission.AddUsers.ToString()), Times.Once);
         }
 
 
         [TestMethod]
         public async Task PermissionDenied()
         {
-            access.Setup(x => x.CanDo("1", Permission.AddUsers)).Returns(false);
+            access.Setup(x => x.CanDo("1", appSettings.ApplicationName, Permission.AddUsers.ToString())).Returns(false);
 
-            var decorator = new RequirePermissionDecorator<TestCommandWithPermission>(new TestHandlerWithPermission(), access.Object);
+            var decorator = new RequirePermissionDecorator<TestCommandWithPermission>(new TestHandlerWithPermission(), access.Object, appSettings);
             var result = await decorator.Handle(new TestCommandWithPermission());
 
             Assert.IsFalse(result.IsSuccess);

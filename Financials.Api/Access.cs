@@ -40,7 +40,7 @@ namespace Financials.Api
             return user;
         }
 
-        public bool CanDo(string tenantId, Permission permission)
+        public bool CanDo(string tenantId, string application, string permission)
         {
             user = CurrentUser();
             var permissions = user?.Tenants?.FirstOrDefault(t => t.TenantId == tenantId)?.Permissions;
@@ -48,7 +48,7 @@ namespace Financials.Api
             if (permissions == null || permissions.Count == 0)
                 return false;
 
-            return permissions.Contains(permission.ToString());
+            return permissions.ContainsKey(application) && permissions[application].Contains(permission);
         }
     }
 }
