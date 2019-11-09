@@ -5,7 +5,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Financials.Application.CQRS
+namespace Financials.CQRS
 {
     public abstract class CommandDecorator<TCommand> : ICommandHandler<TCommand> where TCommand : ICommand
     {

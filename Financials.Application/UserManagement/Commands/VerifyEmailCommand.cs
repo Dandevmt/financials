@@ -1,4 +1,4 @@
-﻿using Financials.Application.CQRS;
+﻿using Financials.CQRS;
 using System;
 
 namespace Financials.Application.UserManagement.Commands

@@ -1,7 +1,7 @@
-﻿using Financials.Application.CQRS;
-using Financials.Application.Transactions.Repositories;
+﻿using Financials.Application.Transactions.Repositories;
 using Financials.Application.UserManagement.Repositories;
 using Financials.Application.UserManagement.Security;
+using Financials.CQRS;
 using Financials.Entities;
 using System;
 using System.Collections.Generic;

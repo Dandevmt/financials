@@ -1,5 +1,5 @@
 ﻿using Financials.Application;
-using Financials.Application.CQRS;
+using Financials.CQRS;
 using MongoDB.Driver;
 using System;
 using System.Collections.Generic;

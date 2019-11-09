@@ -1,4 +1,4 @@
-﻿using Financials.Application.CQRS;
+﻿using Financials.CQRS;
 using Financials.Application.UserManagement.Security;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;

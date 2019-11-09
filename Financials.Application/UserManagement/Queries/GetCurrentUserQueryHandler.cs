@@ -1,5 +1,5 @@
 ﻿using Financials.Application.Configuration;
-using Financials.Application.CQRS;
+using Financials.CQRS;
 using Financials.Application.UserManagement.Repositories;
 using Financials.Application.UserManagement.Security;
 using Financials.Dto;

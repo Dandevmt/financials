@@ -1,4 +1,4 @@
-﻿using Financials.Application.CQRS;
+﻿using Financials.CQRS;
 using SimpleInjector;
 using System;
 using System.Collections.Generic;

@@ -15,7 +15,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Financials.Infrastructure",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Financials.Application.Tests", "Financials.Application.Tests\Financials.Application.Tests.csproj", "{37CA932D-3DFC-4CA4-B376-C54D8458F0CF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Financials.Dto", "Financials.Dto\Financials.Dto.csproj", "{FF0111EC-AE9C-4D63-B563-EE37A9D3F4FE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Financials.Dto", "Financials.Dto\Financials.Dto.csproj", "{FF0111EC-AE9C-4D63-B563-EE37A9D3F4FE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Financials.CQRS", "Financials.CQRS\Financials.CQRS.csproj", "{FDCF0D14-4C19-4E22-9726-9433F33FEC45}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,6 +53,10 @@ Global
 		{FF0111EC-AE9C-4D63-B563-EE37A9D3F4FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FF0111EC-AE9C-4D63-B563-EE37A9D3F4FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FF0111EC-AE9C-4D63-B563-EE37A9D3F4FE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FDCF0D14-4C19-4E22-9726-9433F33FEC45}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FDCF0D14-4C19-4E22-9726-9433F33FEC45}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FDCF0D14-4C19-4E22-9726-9433F33FEC45}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FDCF0D14-4C19-4E22-9726-9433F33FEC45}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

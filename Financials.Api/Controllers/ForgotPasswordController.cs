@@ -1,5 +1,5 @@
 ﻿using Financials.Application;
-using Financials.Application.CQRS;
+using Financials.CQRS;
 using Financials.Application.UserManagement.Commands;
 using Microsoft.AspNetCore.Mvc;
 using System;

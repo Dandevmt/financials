@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Financials.Application.CQRS;
+using Financials.CQRS;
 using Financials.Application.Transactions.Commands;
 using Financials.Dto;
 using Microsoft.AspNetCore.Http;

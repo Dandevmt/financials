@@ -1,6 +1,6 @@
 ﻿
 
-using Financials.Application.CQRS;
+using Financials.CQRS;
 using System.Linq;
 
 namespace Financials.Application.UserManagement.Commands

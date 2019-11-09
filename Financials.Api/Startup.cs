@@ -19,7 +19,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using SimpleInjector;
-using Financials.Application.CQRS;
+using Financials.CQRS;
 using Financials.Api.JsonConverters;
 using Financials.Application.UserManagement.Commands;
 using Financials.Database;

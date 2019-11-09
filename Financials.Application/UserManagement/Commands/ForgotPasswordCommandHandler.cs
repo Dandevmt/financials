@@ -7,8 +7,8 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
-using Financials.Application.CQRS;
 using System.Linq;
+using Financials.CQRS;
 
 namespace Financials.Application.UserManagement.Commands
 {

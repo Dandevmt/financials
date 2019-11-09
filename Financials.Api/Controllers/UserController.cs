@@ -15,7 +15,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
-using Financials.Application.CQRS;
+using Financials.CQRS;
 using Financials.Dto;
 using Financials.Application.UserManagement.Queries;
 using System.Text.Json;

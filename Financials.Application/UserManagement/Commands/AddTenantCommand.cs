@@ -1,5 +1,5 @@
-﻿using Financials.Application.CQRS;
-using Financials.Application.UserManagement.Repositories;
+﻿using Financials.Application.UserManagement.Repositories;
+using Financials.CQRS;
 using System;
 using System.Collections.Generic;
 using System.Text;

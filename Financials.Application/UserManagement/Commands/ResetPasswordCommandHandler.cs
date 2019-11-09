@@ -1,4 +1,4 @@
-﻿using Financials.Application.CQRS;
+﻿using Financials.CQRS;
 using Financials.Application.Email;
 using Financials.Application.UserManagement.Repositories;
 using Financials.Application.UserManagement.Security;

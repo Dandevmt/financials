@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Financials.Application.CQRS
+namespace Financials.CQRS
 {
-    public interface ICommand
+    public interface IQuery<TResult>
     {
     }
 }

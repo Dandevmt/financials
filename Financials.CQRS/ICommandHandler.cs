@@ -4,7 +4,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
-namespace Financials.Application.CQRS
+namespace Financials.CQRS
 {
     public interface ICommandHandler<TCommand> where TCommand : ICommand
     {
