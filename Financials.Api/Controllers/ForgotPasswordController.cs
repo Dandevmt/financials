@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Financials.Dto;
 
 namespace Financials.Api.Controllers
 {
@@ -22,9 +23,9 @@ namespace Financials.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Post(string email)
+        public async Task<IActionResult> Post([FromBody] ForgotPasswordDto email)
         {
-            await dispatcher.Dispatch(new ForgotPasswordCommand(email));
+            await dispatcher.Dispatch(new ForgotPasswordCommand(email.Email));
             return Ok();
         }
     }

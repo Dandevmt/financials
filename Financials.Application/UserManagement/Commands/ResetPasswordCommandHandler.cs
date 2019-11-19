@@ -30,7 +30,11 @@ namespace Financials.Application.UserManagement.Commands
             if (!input.Validate(out ValidationError error))
                 return CommandResult.Fail(error);
 
-            var user = userRepo.Get(input.UserId);
+            if (input.ValidateOnly)
+                return CommandResult.Success();
+
+            var userGuid = Guid.Parse(input.UserId);
+            var user = userRepo.Get(userGuid);
             if (user == null)
                 return CommandResult.Fail(UserManagementError.UserNotFound("User not found"));
 

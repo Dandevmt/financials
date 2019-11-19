@@ -31,7 +31,8 @@ namespace Financials.Api.Controllers
                 NewPassword = input.NewPassword,
                 NewPassword2 = input.NewPassword2,
                 OldPassword = input.OldPassword,
-                ResetCode = input.ResetCode
+                ResetCode = input.ResetCode,
+                ValidateOnly = input.ValidateOnly
             });
         }
     }

@@ -5,11 +5,12 @@ namespace Financials.Application.UserManagement.Commands
 {
     public class ResetPasswordCommand : ICommand
     {
-        public Guid UserId { get; set; }
+        public string UserId { get; set; }
         public string ResetCode { get; set; }
         public string OldPassword { get; set; }
         public string NewPassword { get; set; }
         public string NewPassword2 { get; set; }
+        public bool ValidateOnly { get; set; }
 
         public bool Validate(out ValidationError errors)
         {
@@ -20,7 +21,10 @@ namespace Financials.Application.UserManagement.Commands
                 error.AddError(nameof(ResetCode), "Reset Code or Old Password is required");
             }
 
-            if (UserId == null || UserId == Guid.Empty)
+            if (!Guid.TryParse(UserId, out Guid userGuid))
+                error.AddError(nameof(UserId), "UserId is not in correct format");
+
+            if (userGuid == null || userGuid == Guid.Empty)
                 error.AddError(nameof(UserId), "UserId is required");                
 
             if (string.IsNullOrWhiteSpace(NewPassword))
