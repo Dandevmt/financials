@@ -95,7 +95,7 @@ namespace Financials.Api.DependencyInjection
             container.Register(typeof(ICommandHandler<>), AppDomain.CurrentDomain.GetAssemblies());
 
             // Queries
-            container.Register(typeof(IQueryHandler<,>), typeof(IQueryHandler<,>).Assembly);
+            container.Register(typeof(IQueryHandler<,>), AppDomain.CurrentDomain.GetAssemblies());
 
             // Decorators
             container.RegisterDecorator(typeof(ICommandHandler<>), typeof(RequirePermissionDecorator<>));
