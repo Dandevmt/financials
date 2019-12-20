@@ -23,7 +23,7 @@ namespace Financials.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<CommandResult> Post([FromBody]ResetPasswordDto input)
+        public async Task<Result> Post([FromBody]ResetPasswordDto input)
         {
             return await dispatcher.Dispatch(new ResetPasswordCommand() 
             {

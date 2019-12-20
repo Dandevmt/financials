@@ -30,20 +30,20 @@ namespace Financials.Application.UserManagement.Queries
             this.tenantRepo = tenantRepo;
         }
 
-        public Task<CommandResult<UserForUserDto>> Handle(GetCurrentUserQuery query)
+        public Task<Result<UserForUserDto>> Handle(GetCurrentUserQuery query)
         {
             var user = access.CurrentUser();
             if (user == null)
-                return CommandResult<UserForUserDto>.Fail(UserManagementError.UserNotLoggedIn()).AsTaskTyped();
+                return Result<UserForUserDto>.Fail(UserManagementError.UserNotLoggedIn()).AsTaskTyped();
 
             var userDto = UserMap.ToUserForUserDto(user, tenantRepo.GetAll().ToDictionary(t => t.TenantId.ToString(), t => t.TenantName));
 
             if (userDto == null)
             {
-                return CommandResult<UserForUserDto>.Fail(UserManagementError.UserNotFound()).AsTaskTyped();
+                return Result<UserForUserDto>.Fail(UserManagementError.UserNotFound()).AsTaskTyped();
             }
 
-            return CommandResult<UserForUserDto>.Success(userDto).AsTaskTyped();
+            return Result<UserForUserDto>.Success(userDto).AsTaskTyped();
         }
     }
 

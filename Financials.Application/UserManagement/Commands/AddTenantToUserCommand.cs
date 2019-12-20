@@ -36,21 +36,21 @@ namespace Financials.Application.UserManagement.Commands
             this.userRepo = userRepo;
         }
 
-        public Task<CommandResult> Handle(AddTenantToUserCommand command)
+        public Task<Result> Handle(AddTenantToUserCommand command)
         {
             var user = access.CurrentUser();
             if (user == null)
-                return CommandResult.Fail(UserManagementError.UserNotLoggedIn()).AsTask();
+                return Result.Fail(UserManagementError.UserNotLoggedIn()).AsTask();
 
             var tenant = tenantRepo.Get(command.TenantId);
             if (tenant == null)
-                return CommandResult.Fail(ValidationError.New().AddError(nameof(command.TenantId), "Invalid Organization Id")).AsTask();
+                return Result.Fail(ValidationError.New().AddError(nameof(command.TenantId), "Invalid Organization Id")).AsTask();
 
             if (command.ValidateOnly)
-                return CommandResult.Success().AsTask();
+                return Result.Success().AsTask();
 
             if (user.Tenants.Any(t => t.TenantId == command.TenantId))
-                return CommandResult.Success().AsTask();
+                return Result.Success().AsTask();
 
             user.Tenants.Add(new Entities.UserTenant() 
             {
@@ -60,7 +60,7 @@ namespace Financials.Application.UserManagement.Commands
 
             userRepo.Update(user);
 
-            return CommandResult.Success().AsTask();
+            return Result.Success().AsTask();
 
         }
     }

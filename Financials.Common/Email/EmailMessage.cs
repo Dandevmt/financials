@@ -5,7 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 
-namespace Financials.Application.Email
+namespace Financials.Common.Email
 {
     public abstract class EmailMessage
     {
@@ -14,17 +14,13 @@ namespace Financials.Application.Email
         public virtual string Subject { get; set; }
         public virtual string Body { get; set; }
         public virtual Dictionary<string, string> AdditionalValues { get; set; }
-        public abstract string TemplateName { get; set; }
+        public abstract string Template { get; set; }
 
         public void SetBodyFromTemplate(bool isTest = true)
         {
             try
             {
-                string basePath = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
-                string baseHtml = File.ReadAllText(Path.Combine(basePath, "Email", "Templates", "base.html"));
-                string template = File.ReadAllText(Path.Combine(basePath, "Email", "Templates", $"{TemplateName}.html"));
-                baseHtml = baseHtml.Replace("{{TEST}}", isTest ? "THIS IS A TEST" : "");
-                template = baseHtml.Replace("{{CONTENT}}", template);
+                string template = Template;
                 var props = GetType().GetProperties(System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public).ToDictionary(p => p.Name, p => p.GetValue(this)?.ToString() ?? "");
                 foreach (var property in props)
                 {
@@ -38,11 +34,12 @@ namespace Financials.Application.Email
                     }
                 }
                 Body = template;
-            } catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 throw ex;
             }
-            
+
         }
     }
 }

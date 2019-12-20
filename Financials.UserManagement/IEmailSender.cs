@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Financials.Common.Email;
 using System.Threading.Tasks;
 
-namespace Financials.Application.Email
+namespace Financials.UserManagement
 {
     public interface IEmailSender
     {

@@ -8,18 +8,18 @@ using System.Threading.Tasks;
 
 namespace Financials.Database
 {
-    public class UnitOfWorkDecorator<TCommand> : CommandDecorator<TCommand> where TCommand : ICommand
+    public class UnitOfWorkDecorator<TCommand, TResult> : CommandDecorator<TCommand, TResult> where TCommand : ICommand
     {
         private readonly IClientSessionHandle session;
         
         public UnitOfWorkDecorator(
-            ICommandHandler<TCommand> handler, 
+            ICommandHandler<TCommand, TResult> handler, 
             IClientSessionHandle session) : base(handler)
         {
             this.session = session;
         }
 
-        public override Task<CommandResult> Handle(TCommand input)
+        public override Result<TResult> Handle(TCommand input)
         {
             using (session)
             {

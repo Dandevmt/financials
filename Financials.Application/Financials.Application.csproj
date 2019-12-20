@@ -5,6 +5,32 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="UserManagement\Commands\AddTenantCommand.cs" />
+    <Compile Remove="UserManagement\Commands\AddTenantToUserCommand.cs" />
+    <Compile Remove="UserManagement\Commands\AddUserCommand.cs" />
+    <Compile Remove="UserManagement\Commands\AddUserCommandHandler.cs" />
+    <Compile Remove="UserManagement\Commands\ForgotPasswordCommand.cs" />
+    <Compile Remove="UserManagement\Commands\ForgotPasswordCommandHandler.cs" />
+    <Compile Remove="UserManagement\Commands\LoginCommand.cs" />
+    <Compile Remove="UserManagement\Commands\LoginCommandHandler.cs" />
+    <Compile Remove="UserManagement\Commands\RegisterUserCommand.cs" />
+    <Compile Remove="UserManagement\Commands\RegisterUserCommandHandler.cs" />
+    <Compile Remove="UserManagement\Commands\ResetPasswordCommand.cs" />
+    <Compile Remove="UserManagement\Commands\ResetPasswordCommandHandler.cs" />
+    <Compile Remove="UserManagement\Commands\SeedUserCommand.cs" />
+    <Compile Remove="UserManagement\Commands\VerifyEmailCommand.cs" />
+    <Compile Remove="UserManagement\Commands\VerifyEmailCommandHandler.cs" />
+    <Compile Remove="UserManagement\Queries\GetAllTenantsQuery.cs" />
+    <Compile Remove="UserManagement\Queries\GetAllUsersQuery.cs" />
+    <Compile Remove="UserManagement\Queries\GetCurrentUserQueryHandler.cs" />
+    <Compile Remove="UserManagement\Queries\GetTenantQuery.cs" />
+    <Compile Remove="UserManagement\Queries\GetUserQueryHandler.cs" />
+    <Compile Remove="UserManagement\Security\RequirePermissionDecorator.cs" />
+    <Compile Remove="UserManagement\Security\RequirePermissionQueryDecorator.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Financials.Common\Financials.Common.csproj" />
     <ProjectReference Include="..\Financials.CQRS\Financials.CQRS.csproj" />
     <ProjectReference Include="..\Financials.Dto\Financials.Dto.csproj" />
     <ProjectReference Include="..\Financials.Entities\Financials.Entities.csproj" />
@@ -23,6 +49,10 @@
     <None Update="Email\Templates\VerifyEmail.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="UserManagement\Commands\" />
   </ItemGroup>
 
 </Project>

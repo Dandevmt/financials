@@ -7,6 +7,6 @@ namespace Financials.CQRS
     public interface IError
     {
         int Code { get; }
-        IError AddError(IError error);
+        string Message { get; }
     }
 }

@@ -1,12 +1,11 @@
-﻿using Financials.Application.UserManagement.Codes;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Text;
 
 namespace Financials.Infrastructure.Codes
 {
-    public class CodeGenerator : ICodeGenerator
+    public class CodeGenerator : UserManagement.ICodeGenerator
     {
         public string Generate(int byteSize = 16)
         {

@@ -41,11 +41,11 @@ namespace Financials.Application.UserManagement.Commands
             this.appSettings = appSettings;
         }
 
-        public Task<CommandResult> Handle(SeedUserCommand command)
+        public Task<Result> Handle(SeedUserCommand command)
         {
-            var user = userRepo.Get(command.Email);
+            var user = userRepo.Get(command.Email, "tenant");
             if (user != null)
-                return CommandResult.Success().AsTask();
+                return Result.Success().AsTask();
 
             var tenant = tenantRepo.Add(new Tenant() { TenantId = "admin", TenantName = "Admin" });
 
@@ -84,7 +84,7 @@ namespace Financials.Application.UserManagement.Commands
             };
             userRepo.Add(user);
 
-            return CommandResult.Success().AsTask();
+            return Result.Success().AsTask();
         }
     }
 }

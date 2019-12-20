@@ -38,19 +38,19 @@ namespace Financials.Application.UserManagement.Commands
             this.emailSender = emailSender;
         }
 
-        public async Task<CommandResult> Handle(AddUserCommand command)
+        public async Task<Result> Handle(AddUserCommand command)
         {
             if (!command.Validate(out ValidationError error))
-                return CommandResult.Fail(error);
+                return Result.Fail(error);
 
-            if (!string.IsNullOrWhiteSpace(command.Email) && userRepo.Get(command.Email) != null)
-                return CommandResult.Fail(ValidationError.New().AddError(nameof(command.Email), "Email Already Exists"));
+            if (!string.IsNullOrWhiteSpace(command.Email) && userRepo.Get(command.Email, command.TenantId) != null)
+                return Result.Fail(ValidationError.New().AddError(nameof(command.Email), "Email Already Exists"));
 
             if (tenantRepository.Get(command.TenantId) == null)
-                return CommandResult.Fail(UserManagementError.TenanNotFound());
+                return Result.Fail(UserManagementError.TenanNotFound());
 
             if (command.ValidateOnly)
-                return CommandResult.Success();            
+                return Result.Success();            
 
             var user = GetUserFromInput(command);
             user.Credentials = GetCredentialsIfEmail(command.Email);
@@ -67,7 +67,7 @@ namespace Financials.Application.UserManagement.Commands
                 await emailSender.Send(email);
             }            
 
-            return CommandResult<string>.Success(user.Id.ToString());
+            return Result<string>.Success(user.Id.ToString());
         }
 
         private User GetUserFromInput(AddUserCommand input)

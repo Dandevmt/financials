@@ -32,10 +32,10 @@ namespace Financials.Application.UserManagement.Queries
         {
             this.userRepo = userRepo;
         }
-        public Task<CommandResult<IEnumerable<UserForTenantDto>>> Handle(GetAllUsersQuery query)
+        public Task<Result<IEnumerable<UserForTenantDto>>> Handle(GetAllUsersQuery query)
         {
             var users = userRepo.GetAll(query.TenantId).Select(u => UserMap.ToUserForTenantDto(u, query.TenantId));
-            return CommandResult<IEnumerable<UserForTenantDto>>.Success(users).AsTaskTyped();
+            return Result<IEnumerable<UserForTenantDto>>.Success(users).AsTaskTyped();
         }
     }
 }

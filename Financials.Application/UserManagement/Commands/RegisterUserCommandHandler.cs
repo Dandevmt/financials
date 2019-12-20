@@ -33,16 +33,16 @@ namespace Financials.Application.UserManagement.Commands
             this.appSettings = appSettings;
         }
 
-        public async Task<CommandResult> Handle(RegisterUserCommand input)
+        public async Task<Result> Handle(RegisterUserCommand input)
         {
             if (!input.Validate(out ValidationError error))
-                return CommandResult.Fail(error);
+                return Result.Fail(error);
 
-            if (!string.IsNullOrWhiteSpace(input.Email) && userRepo.Get(input.Email) != null)
-                return CommandResult.Fail(ValidationError.New().AddError(nameof(input.Email), "Email Already Exists"));
+            if (!string.IsNullOrWhiteSpace(input.Email) && userRepo.Get(input.Email, "tenant") != null)
+                return Result.Fail(ValidationError.New().AddError(nameof(input.Email), "Email Already Exists"));
 
             if (input.ValidateOnly)
-                return CommandResult.Success();
+                return Result.Success();
 
             var user = new User() 
             {
@@ -87,7 +87,7 @@ namespace Financials.Application.UserManagement.Commands
             };
             await emailSender.Send(email);
 
-            return CommandResult<string>.Success(user.Id.ToString());
+            return Result<string>.Success(user.Id.ToString());
         }
     }
 }

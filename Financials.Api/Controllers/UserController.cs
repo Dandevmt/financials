@@ -34,14 +34,14 @@ namespace Financials.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<CommandResult<UserForTenantDto>> Get(string tenantId, string id)
+        public async Task<Result<UserForTenantDto>> Get(string tenantId, string id)
         {
             return await dispatcher.Dispatch<GetUserQuery, UserForTenantDto>(new GetUserQuery(id, tenantId));
         }
 
         [HttpGet]
         [Route("all")]
-        public async Task<CommandResult<IEnumerable<UserForTenantDto>>> GetAll(string tenantId)
+        public async Task<Result<IEnumerable<UserForTenantDto>>> GetAll(string tenantId)
         {
             try
             {
@@ -55,7 +55,7 @@ namespace Financials.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<CommandResult> Post([FromBody] AddUserDto input)
+        public async Task<Result> Post([FromBody] AddUserDto input)
         {
             return await dispatcher.Dispatch(new AddUserCommand() 
             {

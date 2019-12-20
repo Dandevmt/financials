@@ -25,18 +25,18 @@ namespace Financials.Application.UserManagement.Commands
             this.emailSender = emailSender;
         }
 
-        public async Task<CommandResult> Handle(ResetPasswordCommand input)
+        public async Task<Result> Handle(ResetPasswordCommand input)
         {
             if (!input.Validate(out ValidationError error))
-                return CommandResult.Fail(error);
+                return Result.Fail(error);
 
             if (input.ValidateOnly)
-                return CommandResult.Success();
+                return Result.Success();
 
             var userGuid = Guid.Parse(input.UserId);
-            var user = userRepo.Get(userGuid);
+            var user = userRepo.Get(userGuid, "tenant");
             if (user == null)
-                return CommandResult.Fail(UserManagementError.UserNotFound("User not found"));
+                return Result.Fail(UserManagementError.UserNotFound("User not found"));
 
             var code = user.ValidationCodes.FirstOrDefault(c => c.Type == Entities.ValidationCodeType.PasswordReset);
             var creds = user.Credentials;
@@ -46,13 +46,13 @@ namespace Financials.Application.UserManagement.Commands
 
             if (!codesMatch && !passMatch)
             {
-                return CommandResult.Fail(UserManagementError.InvalidCodePasswordOrUserId());             
+                return Result.Fail(UserManagementError.InvalidCodePasswordOrUserId());             
             }                
 
             // Creds shouldn't be null
             if (creds == null)
             {
-                return CommandResult.Fail(UserManagementError.InvalidCodePasswordOrUserId());
+                return Result.Fail(UserManagementError.InvalidCodePasswordOrUserId());
             }                
 
             creds.Password = hasher.HashPassword(input.NewPassword);
@@ -64,7 +64,7 @@ namespace Financials.Application.UserManagement.Commands
                 To = creds.Email
             });
 
-            return CommandResult.Success();
+            return Result.Success();
         }
     }
 }

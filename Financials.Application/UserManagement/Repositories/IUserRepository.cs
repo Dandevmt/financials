@@ -7,9 +7,9 @@ namespace Financials.Application.UserManagement.Repositories
 {
     public interface IUserRepository
     {
-        User Get(Guid id);
-        User Get(string email);
-        IEnumerable<User> Get(string tenantId, int pageSize, int pageNumber, string sortField);
+        User Get(Guid id, string tenantId);
+        User GetWithAllTenants(Guid id);
+        User Get(string email, string tenantId);
         IEnumerable<User> GetAll(string tenantId);
         User Add(User user);
         User Update(User user);

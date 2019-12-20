@@ -23,19 +23,19 @@ namespace Financials.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<CommandResult> Add([FromBody] AddTenantDto input)
+        public async Task<Result> Add([FromBody] AddTenantDto input)
         {
             return await dispatcher.Dispatch(new AddTenantCommand(input.Id, input.Name));
         }
 
         [HttpGet]
-        public async Task<CommandResult<TenantDto>> Get(string id)
+        public async Task<Result<TenantDto>> Get(string id)
         {
             return await dispatcher.Dispatch<GetTenantQuery, TenantDto>(new GetTenantQuery(id));
         }
 
         [HttpGet]
-        public async Task<CommandResult<IList<TenantDto>>> Get()
+        public async Task<Result<IList<TenantDto>>> Get()
         {
             return await dispatcher.Dispatch<GetAllTenantsQuery, IList<TenantDto>>(new GetAllTenantsQuery());
         }

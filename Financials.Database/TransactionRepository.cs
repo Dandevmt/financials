@@ -1,5 +1,4 @@
-﻿using Financials.Application.Transactions.Repositories;
-using Financials.Entities;
+﻿using Financials.Entities;
 using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
@@ -7,7 +6,7 @@ using System.Text;
 
 namespace Financials.Database
 {
-    public class TransactionRepository : ITransactionRepository
+    public class TransactionRepository
     {
         private readonly IMongoCollection<Transaction> collection;
         private readonly IClientSessionHandle session;

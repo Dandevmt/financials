@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Financials.Application\Financials.Application.csproj" />
+    <ProjectReference Include="..\Financials.UserManagement\Financials.UserManagement.csproj" />
   </ItemGroup>
 
 </Project>

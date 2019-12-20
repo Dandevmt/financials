@@ -27,19 +27,19 @@ namespace Financials.Application.UserManagement.Queries
             this.tenantRepo = tenantRepo;
         }
 
-        public Task<CommandResult<TenantDto>> Handle(GetTenantQuery query)
+        public Task<Result<TenantDto>> Handle(GetTenantQuery query)
         {
             var tenant = tenantRepo.Get(query.Id);
             if (tenant == null)
             {
-                return CommandResult<TenantDto>.Fail(UserManagementError.TenanNotFound()).AsTaskTyped();
+                return Result<TenantDto>.Fail(UserManagementError.TenanNotFound()).AsTaskTyped();
             }
             var dto = new TenantDto()
             {
                 Id = tenant.TenantId.ToString(),
                 Name = tenant.TenantName
             };
-            return CommandResult<TenantDto>.Success(dto).AsTaskTyped();
+            return Result<TenantDto>.Success(dto).AsTaskTyped();
         }
     }
 }

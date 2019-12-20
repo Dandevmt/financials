@@ -30,12 +30,12 @@ namespace Financials.Application.UserManagement.Commands
             this.appSettings = appSettings;
         }
 
-        public async Task<CommandResult> Handle(ForgotPasswordCommand email)
+        public async Task<Result> Handle(ForgotPasswordCommand email)
         {
-            var user = userRepo.Get(email.Email);
+            var user = userRepo.Get(email.Email, "tenantId");
             if (user == null)
             {
-                return CommandResult.Fail();
+                return Result.Fail();
             }
             user.ValidationCodes = user.ValidationCodes.Where(v => v.Type != ValidationCodeType.PasswordReset).ToList();
 
@@ -54,7 +54,7 @@ namespace Financials.Application.UserManagement.Commands
                 Url = string.Format(appSettings.PasswordResetUrl, user.Id.ToString(), code.Code)
             };
             await emailSender.Send(em);
-            return CommandResult.Success();
+            return Result.Success();
         }
     }
 }

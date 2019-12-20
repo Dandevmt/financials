@@ -4,11 +4,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using Financials.Application;
 using Financials.CQRS;
-using Financials.Application.UserManagement.Commands;
 using Financials.Dto;
 using Financials.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Financials.UserManagement;
 
 namespace Financials.Api.Controllers
 {
@@ -24,22 +24,23 @@ namespace Financials.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<CommandResult> Register([FromBody] RegisterUserDto input)
+        public Result<string> Register([FromBody] RegisterUserDto input)
         {
-            return await dispatcher.Dispatch(new RegisterUserCommand() 
+            return dispatcher.Command<RegisterUserCommand,string>(new RegisterUserCommand() 
             {
-                City = input.City,
-                Country = input.Country,
+                //City = input.City,
+                //Country = input.Country,
+                Username = input.Username,
                 Email = input.Email,
-                Phone = input.Phone,
-                FirstName = input.FirstName,
-                LastName = input.LastName,
+                Email2 = input.Email2,
+                //Phone = input.Phone,
+                //FirstName = input.FirstName,
+                //LastName = input.LastName,
                 Password = input.Password,
                 Password2 = input.Password2,
-                State = input.State,
-                Street = input.Street,
-                Zip = input.Zip,
-                ValidateOnly = input.ValidateOnly
+                //State = input.State,
+                //Street = input.Street,
+                //Zip = input.Zip
             });
         }
     }

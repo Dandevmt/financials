@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Financials.Api.Errors;
-using Financials.Application.UserManagement.Codes;
 using Financials.Application.Configuration;
 using Financials.Application.UserManagement;
 using Financials.Infrastructure.Codes;
@@ -21,7 +20,6 @@ using MongoDB.Driver;
 using SimpleInjector;
 using Financials.CQRS;
 using Financials.Api.JsonConverters;
-using Financials.Application.UserManagement.Commands;
 using Financials.Database;
 using SimpleInjector.Lifestyles;
 
@@ -97,7 +95,7 @@ namespace Financials.Api
             using (AsyncScopedLifestyle.BeginScope(container))
             {
                 var dispatcher = container.GetInstance<Dispatcher>();
-                await dispatcher.Dispatch(new SeedUserCommand("admin", "admin"));
+                //await dispatcher.Dispatch(new SeedUserCommand("admin", "admin"));
             }                
         }
     }

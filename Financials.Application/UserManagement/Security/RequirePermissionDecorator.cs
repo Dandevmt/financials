@@ -9,7 +9,7 @@ using Financials.Application.Configuration;
 
 namespace Financials.Application.UserManagement.Security
 {
-    public class RequirePermissionDecorator<TCommand> : CommandDecorator<TCommand> where TCommand : ICommand, IRequirePermission
+    public class RequirePermissionDecorator<TCommand> : CommandDecorator where TCommand : ICommand, IRequirePermission
     {
         private readonly AppSettings appSettings;
         private readonly IAccess access;
@@ -20,7 +20,7 @@ namespace Financials.Application.UserManagement.Security
             this.access = access;
             this.appSettings = appSettings;
         }
-        public override Task<CommandResult> Handle(TCommand command)
+        public override Task<Result> Handle(TCommand command)
         {
             var perm = command as IRequirePermission;
             if (perm == null)
@@ -32,7 +32,7 @@ namespace Financials.Application.UserManagement.Security
             }
             else
             {
-                return CommandResult.Fail(CommandError.Forbidden($"Permission denied for {perm.Permission}")).AsTask();
+                return Result.Fail(CommandError.Forbidden($"Permission denied for {perm.Permission}")).AsTask();
             }
         }
     }

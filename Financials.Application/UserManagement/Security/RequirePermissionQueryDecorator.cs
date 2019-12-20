@@ -19,7 +19,7 @@ namespace Financials.Application.UserManagement.Security
             this.access = access;
             this.appSettings = appSettings;
         }
-        public override Task<CommandResult<TResult>> Handle(TQuery query)
+        public override Task<Result<TResult>> Handle(TQuery query)
         {
             var perm = query as IRequirePermission;
             if (perm == null)
@@ -31,7 +31,7 @@ namespace Financials.Application.UserManagement.Security
             }
             else
             {
-                return CommandResult<TResult>.Fail(CommandError.Forbidden($"Permission denied for {perm.Permission}")).AsTaskTyped();
+                return Result<TResult>.Fail(CommandError.Forbidden($"Permission denied for {perm.Permission}")).AsTaskTyped();
             }
         }
     }

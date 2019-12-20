@@ -22,7 +22,7 @@ namespace Financials.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<CommandResult> VerifyEmail(Guid userId, string code)
+        public async Task<Result> VerifyEmail(Guid userId, string code)
         {
             return await dispatcher.Dispatch(new VerifyEmailCommand(userId, code));
         }

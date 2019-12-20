@@ -6,13 +6,14 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using System.Text;
+using Financials.UserManagement;
 
 namespace Financials.Infrastructure.Hashing
 {
     /// <summary>
     /// Implements the standard Identity password hashing.
     /// </summary>
-    public class PasswordHasher : IPasswordHasher
+    public class PasswordHasher : IPasswordHasher, IHasherService
     {
         /* =======================
          * HASHED PASSWORD FORMATS

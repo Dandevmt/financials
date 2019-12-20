@@ -1,11 +1,9 @@
 ﻿using Financials.Api.Authentication;
 using Financials.Api.Logging;
 using Financials.Application;
-using Financials.Application.UserManagement.Codes;
 using Financials.Application.Configuration;
 using Financials.Application.Email;
 using Financials.Application.Logging;
-using Financials.Application.UserManagement.Repositories;
 using Financials.Application.UserManagement.Security;
 using Financials.Application.UserManagement;
 using Financials.Database;
@@ -22,7 +20,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Financials.CQRS;
-using Financials.Application.Transactions.Repositories;
+using Financials.UserManagement;
 
 namespace Financials.Api.DependencyInjection
 {
@@ -63,7 +61,7 @@ namespace Financials.Api.DependencyInjection
 
             // Other Singletons
             container.RegisterSingleton<ICodeGenerator, CodeGenerator>();
-            container.RegisterSingleton<IPasswordHasher>(() => new PasswordHasher());
+            container.RegisterSingleton<IHasherService>(() => new PasswordHasher());
             container.RegisterSingleton<IEmailSender>(() => new EmailSender(new MailKit.Net.Smtp.SmtpClient(), appSettings.EmailSenderUrl, appSettings.EmailSenderUsername, appSettings.EmailSenderPassword, appSettings.Environment != ReleaseEnvironment.Prod));
 
             // Logging
@@ -74,9 +72,8 @@ namespace Financials.Api.DependencyInjection
                 c => true);
 
             // Repositories
-            container.Register<ITenantRepository, TenantRepository>(Lifestyle.Scoped);
+            container.Register<Application.UserManagement.Repositories.ITenantRepository, TenantRepository>(Lifestyle.Scoped);
             container.Register<IUserRepository, UserRepository>(Lifestyle.Scoped);
-            container.Register<ITransactionRepository, TransactionRepository>(Lifestyle.Scoped);
             container.Register<IClientSessionHandle>(() =>
             {
                 return container.GetInstance<IMongoDatabase>().Client.StartSession();
@@ -85,23 +82,23 @@ namespace Financials.Api.DependencyInjection
             // Access
             container.RegisterInstance<Func<IAccess>>(() => container.GetInstance<IAccess>());
             container.Register<ITokenBuilder, TokenBuilder>(Lifestyle.Singleton);
-            container.Register<IAccess, Access>(Lifestyle.Scoped);
+            //container.Register<IAccess, Access>(Lifestyle.Scoped);
 
             // Command Dispatcher and Container Wrapper
             container.RegisterSingleton<IProvider, ProviderWrapper>();
             container.RegisterSingleton<Dispatcher>();
 
             // Commands
-            container.Register(typeof(ICommandHandler<>), AppDomain.CurrentDomain.GetAssemblies());
+            container.Register(typeof(ICommandHandler<,>), AppDomain.CurrentDomain.GetAssemblies());
 
             // Queries
             container.Register(typeof(IQueryHandler<,>), AppDomain.CurrentDomain.GetAssemblies());
 
             // Decorators
-            container.RegisterDecorator(typeof(ICommandHandler<>), typeof(RequirePermissionDecorator<>));
-            container.RegisterDecorator(typeof(IQueryHandler<,>), typeof(RequirePermissionQueryDecorator<,>));
-            container.RegisterDecorator(typeof(ICommandHandler<>), typeof(UnitOfWorkDecorator<>),
-                context => context.ImplementationType.GetCustomAttributes(typeof(UnitOfWorkDecoratorAttribute), false).Any());
+            //container.RegisterDecorator(typeof(ICommandHandler<,>), typeof(RequirePermissionDecorator<>));
+            //container.RegisterDecorator(typeof(IQueryHandler<,>), typeof(RequirePermissionQueryDecorator<,>));
+            //container.RegisterDecorator(typeof(ICommandHandler<,>), typeof(UnitOfWorkDecorator<>),
+            //    context => context.ImplementationType.GetCustomAttributes(typeof(UnitOfWorkDecoratorAttribute), false).Any());
             
 
             container.Verify();

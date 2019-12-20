@@ -34,7 +34,7 @@ namespace Financials.Api
 
             if (user == null)
             {
-                user = userRepo.Get(userId);
+                user = userRepo.GetWithAllTenants(userId);
             }
 
             return user;

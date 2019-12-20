@@ -5,10 +5,11 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using Financials.Common.Email;
 
 namespace Financials.Infrastructure.Email
 {
-    public class EmailSender : IEmailSender
+    public class EmailSender : UserManagement.IEmailSender
     {
         private readonly SmtpClient client;
         private readonly bool isTest;

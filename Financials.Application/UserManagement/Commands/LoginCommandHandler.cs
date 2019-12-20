@@ -29,17 +29,17 @@ namespace Financials.Application.UserManagement.Commands
             this.hasher = hasher;
         }
 
-        public Task<CommandResult> Handle(LoginCommand input)
+        public Task<Result> Handle(LoginCommand input)
         {
-            var user = userRepo.Get(input.Email);
+            var user = userRepo.Get(input.Email, "tenant");
             if (user == null || user.Credentials == null)
-                return CommandResult.Fail(UserManagementError.InvalidEmailOrPassword()).AsTask();
+                return Result.Fail(UserManagementError.InvalidEmailOrPassword()).AsTask();
 
             if (user.Credentials.EmailVerified == null)
-                return CommandResult.Fail(UserManagementError.EmailNotVerified()).AsTask();
+                return Result.Fail(UserManagementError.EmailNotVerified()).AsTask();
 
             if (!hasher.VerifyPassword(user.Credentials.Password, input.Password))
-                return CommandResult.Fail(UserManagementError.InvalidEmailOrPassword()).AsTask();
+                return Result.Fail(UserManagementError.InvalidEmailOrPassword()).AsTask();
 
             var tokenDto = new TokenDto()
             {
@@ -47,7 +47,7 @@ namespace Financials.Application.UserManagement.Commands
                 TokenDurationMinutes = appSettings.TokenDurationMinutes,
                 Domain = appSettings.TokenDomain
             };
-            return CommandResult<TokenDto>.Success(tokenDto).AsTask();
+            return Result<TokenDto>.Success(tokenDto).AsTask();
         }
     }
 }

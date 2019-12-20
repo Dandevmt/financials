@@ -25,13 +25,13 @@ namespace Financials.Api.Controllers
 
 
         [HttpPost]
-        public async Task<CommandResult> CreateToken([FromBody] LoginDto login)
+        public async Task<Result> CreateToken([FromBody] LoginDto login)
         {
             return await dispatcher.Dispatch(new LoginCommand(login.Email, login.Password));
         }
 
         [HttpGet]
-        public async Task<CommandResult<UserForUserDto>> GetLoggedInUser()
+        public async Task<Result<UserForUserDto>> GetLoggedInUser()
         {
             var t = await dispatcher.Dispatch<GetCurrentUserQuery, UserForUserDto>(new GetCurrentUserQuery());
             return t;

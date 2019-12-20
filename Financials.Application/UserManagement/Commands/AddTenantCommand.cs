@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Financials.Application.UserManagement.Commands
 {
-    public class AddTenantCommand : ICommand
+    public class AddTenantCommand : ICommand<string>
     {
         public string Id { get; }
         public string Name { get; }
@@ -18,7 +18,7 @@ namespace Financials.Application.UserManagement.Commands
         }
     }
 
-    public class AddTenantCommandHandler : ICommandHandler<AddTenantCommand>
+    public class AddTenantCommandHandler : ICommandHandler<AddTenantCommand, string>
     {
         private readonly ITenantRepository tenantRepo;
 
@@ -27,18 +27,18 @@ namespace Financials.Application.UserManagement.Commands
             this.tenantRepo = tenantRepo;
         }
 
-        public Task<CommandResult> Handle(AddTenantCommand command)
+        public Result<string> Handle(AddTenantCommand command)
         {
             var existinTenant = tenantRepo.Get(command.Id);
             if (existinTenant != null)
-                return CommandResult.Fail(UserManagementError.TenantCodeAlreadyExists()).AsTask();
+                return Result.Fail(UserManagementError.TenantCodeAlreadyExists()).AsTask();
 
             var tenant = tenantRepo.Add(new Entities.Tenant()
             {
                 TenantId = command.Id,
                 TenantName = command.Name
             });
-            return CommandResult<string>.Success(tenant.TenantId.ToString()).AsTask();
+            return Result<string>.Success(tenant.TenantId.ToString());
         }
     }
 }

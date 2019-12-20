@@ -22,7 +22,7 @@ namespace Financials.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<CommandResult> Post([FromBody] AddTenantToUserDto dto)
+        public async Task<Result> Post([FromBody] AddTenantToUserDto dto)
         {
             return await dispatcher.Dispatch(new AddTenantToUserCommand(dto.TenantId, dto.FederationCode, dto.ValidateOnly));
         }

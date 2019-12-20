@@ -18,15 +18,15 @@ namespace Financials.Application.UserManagement.Commands
             this.userRepo = userRepo;
         }
 
-        public Task<CommandResult> Handle(VerifyEmailCommand input)
+        public Task<Result> Handle(VerifyEmailCommand input)
         {
-            var user = userRepo.Get(input.UserId);
+            var user = userRepo.Get(input.UserId, "tenant");
             if (user == null)
-                return CommandResult.Fail(UserManagementError.UserNotFound("User not found")).AsTask();
+                return Result.Fail(UserManagementError.UserNotFound("User not found")).AsTask();
 
             var code = user.ValidationCodes.FirstOrDefault(c => c.Type == ValidationCodeType.Email);
             if (code == null || !code.Code.Equals(input.Code) || (DateTime.Today - code.CreatedDate).TotalMinutes > 15)
-                return CommandResult.Fail(UserManagementError.InvalidEmailVerificationCode()).AsTask();
+                return Result.Fail(UserManagementError.InvalidEmailVerificationCode()).AsTask();
 
             var creds = user.Credentials;
             creds.EmailVerified = DateTime.Now;
@@ -34,10 +34,10 @@ namespace Financials.Application.UserManagement.Commands
             var res = userRepo.Update(user);
             if (res == null)
             {
-                return CommandResult.Fail(UserManagementError.EmailCouldNotUpdateDatabase()).AsTask();
+                return Result.Fail(UserManagementError.EmailCouldNotUpdateDatabase()).AsTask();
             } else
             {
-                return CommandResult.Success().AsTask();
+                return Result.Success().AsTask();
             }
         }
     }

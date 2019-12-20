@@ -22,7 +22,7 @@ namespace Financials.Api.Controllers
         }
 
         [HttpPost]
-        public Task<CommandResult> Post([FromBody]AddTransactionDto input)
+        public Task<Result> Post([FromBody]AddTransactionDto input)
         {
             return dispatcher.Dispatch(new AddTransactionCommand() 
             {

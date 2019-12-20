@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Financials.CQRS
 {
-    public class ValidationError : CommandError, IError
+    public class ValidationError : Error, IError
     {
         public IDictionary<string, IList<string>> FieldErrors { get; }
         public bool HasError 
@@ -13,7 +13,7 @@ namespace Financials.CQRS
             get { return FieldErrors.Count > 0; }
         }
 
-        protected ValidationError(int code, int httpStatusCode, string description) : base(code, httpStatusCode, description)
+        protected ValidationError(int code, string message) : base(code, message)
         {
             FieldErrors = new Dictionary<string, IList<string>>();
         }
@@ -32,7 +32,7 @@ namespace Financials.CQRS
         }
 
         public static ValidationError New() =>
-            new ValidationError(400, 400, "Validation");
+            new ValidationError(400, "Validation");
                 
     }
 }

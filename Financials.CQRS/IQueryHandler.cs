@@ -7,6 +7,6 @@ namespace Financials.CQRS
 {
     public interface IQueryHandler<TQuery, TResult> where TQuery : IQuery<TResult>
     {
-        Task<CommandResult<TResult>> Handle(TQuery query);
+        Task<Result<TResult>> Handle(TQuery query);
     }
 }
