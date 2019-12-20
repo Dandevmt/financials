@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Financials.CQRS
 {
-    public abstract class CommandDecorator<TCommand, TResult> : ICommandHandler<TCommand, TResult> where TCommand : ICommand
+    public abstract class CommandDecorator<TCommand, TResult> : ICommandHandler<TCommand, TResult> where TCommand : ICommand<TResult>
     {
         protected readonly ICommandHandler<TCommand, TResult> commandHandler;
 

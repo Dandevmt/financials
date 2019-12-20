@@ -16,14 +16,14 @@ namespace Financials.CQRS
             events = new List<IEvent>();
         }
 
-        public Result<TResult> Command<TCommand, TResult>(TCommand command) where TCommand : ICommand
+        public Result<TResult> Command<TResult>(ICommand<TResult> command)
         {
-            Type handlerType = typeof(ICommandHandler<,>).MakeGenericType(typeof(TCommand), typeof(TResult));
-            var handler = provider.GetService(handlerType) as ICommandHandler<TCommand, TResult>;
+            Type handlerType = typeof(ICommandHandler<,>).MakeGenericType(command.GetType(), typeof(TResult));
+            var handler = provider.GetService(handlerType) as dynamic;
             if (handler == null)
                 throw new Exception($"Could not get service of type {handlerType}");
 
-            return handler.Handle(command);
+            return handler.Handle((dynamic)command);
         }
 
         public async Task<Result<TResult>> Query<TQuery, TResult>(TQuery query) where TQuery : IQuery<TResult>
@@ -47,10 +47,10 @@ namespace Financials.CQRS
             foreach(var evnt in events)
             {
                 Type handlerType = typeof(IEventHandler<>).MakeGenericType(evnt.GetType());
-                var handler = provider.GetService(handlerType) as IEventHandler<IEvent>;
+                var handler = provider.GetService(handlerType);
                 if (handler == null)
                     throw new Exception($"Could not get service of type {handlerType}");
-                handlers.Add(handler.Handle(evnt));
+                handlers.Add(((dynamic)handler).Handle((dynamic)evnt));
             }
             events.Clear();
             await Task.WhenAll(handlers.ToArray());            

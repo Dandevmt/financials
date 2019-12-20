@@ -24,9 +24,9 @@ namespace Financials.Api.Controllers
         }
 
         [HttpPost]
-        public Result<string> Register([FromBody] RegisterUserDto input)
+        public async Task<Result<string>> Register([FromBody] RegisterUserDto input)
         {
-            return dispatcher.Command<RegisterUserCommand,string>(new RegisterUserCommand() 
+            var user = dispatcher.Command(new RegisterUserCommand() 
             {
                 //City = input.City,
                 //Country = input.Country,
@@ -42,6 +42,11 @@ namespace Financials.Api.Controllers
                 //Street = input.Street,
                 //Zip = input.Zip
             });
+
+            if (user.IsSuccess)
+                await dispatcher.ProcessEvents();
+
+            return user;
         }
     }
 }

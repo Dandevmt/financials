@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Financials.UserManagement
 {
-    public class RegisterUserCommand : ICommand
+    public class RegisterUserCommand : ICommand<string>
     {
         public string Username { get; set; }
         public string Email { get; set; }
@@ -40,7 +40,7 @@ namespace Financials.UserManagement
                 var result = Result<string>.Success("0");
 
                 if (!string.IsNullOrWhiteSpace(input.Email) && userRepo.GetByUsername(input.Username) != null)
-                    result.AddError(ValidationError.New().AddError(nameof(input.Username), "Ussername Already Exists"));
+                    result = Result<string>.Fail(null, ValidationError.New().AddError(nameof(input.Username), "Ussername Already Exists"));
 
                 var emailR = UserManagement.Email.Create(input.Email, input.Email2, codeGenerator);
                 var passwordR = PasswordHashed.Create(input.Password, input.Password2, hasher);

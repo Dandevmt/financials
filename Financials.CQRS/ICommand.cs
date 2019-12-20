@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Financials.CQRS
 {
-    public interface ICommand
+    public interface ICommand<TResult>
     {
     }
 }

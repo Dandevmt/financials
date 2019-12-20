@@ -13,6 +13,8 @@ namespace Financials.UserManagement
             <p><a href='VerifyUrl'>{{VerifyUrl}}</a></p>
         ";
 
+        public override string Subject { get; set; } = "Verify Email";
+
         public string VerifyUrl { get; set; }
 
         public VerifyEmailMessage(string user, string code)

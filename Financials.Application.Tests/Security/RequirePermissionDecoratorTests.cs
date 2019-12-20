@@ -23,12 +23,12 @@ namespace Financials.Application.Tests.Security
             access = new Mock<IAccess>();            
         }
 
-        class TestCommandWithPermission : ICommand, IRequirePermission
-        {
-            public string TenantId => "1";
+        //class TestCommandWithPermission : ICommand, IRequirePermission
+        //{
+        //    public string TenantId => "1";
 
-            public Permission Permission => Permission.AddUsers;
-        }
+        //    public Permission Permission => Permission.AddUsers;
+        //}
 
         //class TestHandlerWithPermission : ICommandHandler<TestCommandWithPermission>
         //{

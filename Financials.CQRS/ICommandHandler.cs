@@ -6,7 +6,7 @@ using System.Windows.Input;
 
 namespace Financials.CQRS
 {
-    public interface ICommandHandler<TCommand, TResult> where TCommand : ICommand
+    public interface ICommandHandler<TCommand, TResult> where TCommand : ICommand<TResult>
     {
         Result<TResult> Handle(TCommand command);
     }
