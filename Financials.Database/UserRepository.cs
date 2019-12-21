@@ -33,7 +33,7 @@ namespace Financials.Database
 
         public User Delete(ObjectId id)
         {
-            var update = Builders<User>.Update.Set(u => u.Archived, DateTime.Now);
+            var update = Builders<User>.Update.Set(u => u.ArchivedDate, DateTime.Now);
             return collection.FindOneAndUpdate(session, x => x.Id == id, update);
         }
 
